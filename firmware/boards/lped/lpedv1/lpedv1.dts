@@ -1,0 +1,108 @@
+/dts-v1/;
+#include <nordic/nrf52810_qfaa.dtsi>
+#include "lpedv1-pinctrl.dtsi"
+
+/ {
+	model = "LPEDv1 board";
+	compatible = "lped,lpedv1";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		diceled: dice_led {
+			gpios = <&gpio0 6 (1 << 9)>;
+			label = "Dice LED";
+		};
+
+		dockled: dock_led {
+			gpios = <&gpio0 5 (1 << 9)>;
+			label = "Dock LED";
+		};
+	};
+
+	inputs: zephyr,user {
+		dock_conn-gpios = <&gpio0 4 GPIO_PULL_DOWN>;
+		io-channels = <&adc 0>;
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		dockbutton: dock_button {
+			gpios = <&gpio0 9 GPIO_PULL_DOWN>;
+			label = "dock_button";
+		};
+	};
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&spi0 {
+	status = "okay";
+	compatible = "nordic,nrf-spi";
+	pinctrl-0 = <&spi0_default>;
+	pinctrl-1 = <&spi0_sleep>;
+	pinctrl-names = "default", "sleep";
+	cs-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
+	fxls89xx: fxls89xx@0 {
+		zephyr,pm-device-runtime-auto;
+		compatible = "nxp,fxls89xx";
+		reg = <0x0>;
+		spi-max-frequency = <2000000>;
+		int1-gpios = <&gpio0 12 GPIO_PULL_UP>;
+		int2-gpios = <&gpio0 15 GPIO_PULL_UP>;
+	};
+};
+
+&adc {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_6";			// Gain of 1/6 with internal reference (0.6V) results in range of +-3.6V
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_AIN6>;
+		zephyr,resolution = <12>;
+	};
+};
+
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(48)>;
+		};
+
+		slot0_partition: partition@c000 {
+			label = "image-0";
+			reg = <0x0000c000 DT_SIZE_K(56)>;
+		};
+
+		slot1_partition: partition@1a000 {
+			label = "image-1";
+			reg = <0x0001a000 DT_SIZE_K(56)>;
+		};
+
+		storage_partition: partition@28000 {
+			label = "storage";
+			reg = <0x00028000 DT_SIZE_K(32)>;
+		};
+	};
+};

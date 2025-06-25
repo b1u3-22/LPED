@@ -1,0 +1,110 @@
+source "$ZEPHYR_BASE/Kconfig"
+
+menu "LPED feature options"
+
+config LPED_IGNORE_DOCK_AT_STARTUP
+    bool "Ignore dock connection at startup"
+    default n
+    help
+        This option will set the LPED to ignore dock connection status on startup, 
+        resulting in the dice always transitioning to the active state, instead of 
+        determining what state it should transition based on the dock connection
+
+config LPED_FACTORY_RESET_AT_STARTUP
+    bool "Run factory reset at startup"
+    default n
+    help
+        Erase all user settings from flash memory, including dice and side definitions, 
+        blinking preferences and selected profile
+
+config LPED_FORCE_CONNECTABLE_AT_STARTUP
+    bool "Start in connectable state"
+    default n
+    depends on !LPED_IGNORE_DOCK_AT_STARTUP
+    help
+        Transition to connectable state at startup, allowing the dice to be connected 
+        without pressing the dock button
+        If this is enabled the CONFIG_LPED_IGNORE_DOCK_AT_STARTUP is ignored, since the 
+        die has to transition into Bluetooth state regardless of the DOCK_CON pin state
+
+config LPED_CAP_STATE_IN_ROLLING_MSG
+    bool "Send cap state as a message content with rolling status"
+    default y
+    help
+       Send the capacitor state of charge in ROLLING type status message, 
+       saving one message for each dice throw. It is sent in every ROLLING
+       message
+
+config LPED_CAP_STATE_INTERVAL
+    int "Interval for sending separate capacitor state message"
+    default 3
+    depends on !LPED_CAP_STATE_IN_ROLLING_MSG
+    help 
+        Defines interval between separate CAP_STATE status messages. For
+        sending every dice throw, set to 0. This config is ignore if 
+        CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG is enabled.
+
+config LPED_DOCK_DEBOUNCE_TIME
+    int "Debounce time in ms for dock connection and button press"
+    default 100
+    help
+        Debounce time for dock connection and button press to avoid
+        reacting to distortions in the signal
+
+config LPED_ACC_DEBOUNCE_TIME
+    int "Debounce time for accelerometer interrupts"
+    default 100
+    help
+       Debounce time for accelerometer interrupts to avoid reacting 
+       to signal coming from the accelerometer changes that are too fast
+       and should be ignored
+        
+config LPED_VISIBILITY_TIMEOUT
+    int "Defines for how many seconds should the die be visible"
+    default 60
+    help
+        Defines for how many seconds should the die be visible after
+        connecting to dock. After this timeout is reached, it will 
+        transition into invisible mode and it is necessary to unplug
+        and plug it into the dock again to reset this timer
+
+config LPED_CONNECTABLE_TIMEOUT
+    int "Defines for how many seconds should the die be connectable"
+    default 30
+    help 
+        Defines for how many seconds should the die be connectable 
+        after the button press. If this timeout is reached before 
+        a device is connected, the die has to be reconnected into the
+        dock in order to reset the visibility and connectable timer. 
+
+config LPED_CONNECTED_TIMEOUT
+    int "Defines for how many seconds should the die stay connected"
+    default 600
+    help
+        Defines for how many seconds will the die stay connected to the 
+        device between operations. This timer is reset after any read or 
+        write of the GATT characteristic. After this timeout is reached
+        the die will transition into invisible state
+
+config LPED_DOCK_BUTTON_LONG_PRESS_DURATION
+    int "Defines how many seconds it takes to register a button press as long press"
+    default 2
+    help 
+        Defines how many seconds it takes to register a button press as long press
+
+config LPED_ACC_BOOT_DURATION
+    int "Defines how many milliseconds it takes for the accelerometer to boot up"
+    default 20
+    help
+        Defines how many milliseconds it takes for the accelerometer to boot up. 
+        During this time, interrupts received on INT1 and INT2 connected pins 
+        will be ignored
+
+config LPED_BT_STATE_INTERVAL
+    int "Defines how many milliseconds are between accelerometer and capacitor state readings"
+    default 100
+    help
+        Defines how many milliseconds are between accelerometer and capacitor state readings
+        when the die is connected to a client application
+
+endmenu

@@ -1,0 +1,5 @@
+board:
+  name: lpedv1
+  vendor: lped
+  socs:
+    - name: nrf52810

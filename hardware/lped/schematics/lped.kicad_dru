@@ -1,0 +1,6 @@
+(version 1)
+
+(rule "Inner layer hole-to-copper clearance"
+	(layer inner)
+	(constraint hole_clearance (min 0.25mm))
+)

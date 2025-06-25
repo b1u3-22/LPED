@@ -1,0 +1,2 @@
+config BOARD_LPEDV1
+	select SOC_NRF52810_QFAA

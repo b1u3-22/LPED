@@ -1,0 +1,43 @@
+{
+    "nrf-connect.applications": [
+        "${workspaceFolder}"
+    ],
+    "cSpell.words": [
+        "CHRC",
+        "DCDC",
+        "diceled",
+        "dockbutton",
+        "dockled",
+        "DRDY",
+        "dtsi",
+        "endmenu",
+        "FXLS",
+        "gpios",
+        "gpiote",
+        "Jiří",
+        "lped",
+        "mcuboot",
+        "pinctrl",
+        "qfaa",
+        "SAADC",
+        "Sedlák",
+        "xsedla"
+    ],
+    "files.associations": {
+        "*.h": "c",
+        "cstdint": "c",
+        "optional": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "variant": "c",
+        "charconv": "c",
+        "chrono": "c",
+        "format": "c",
+        "ranges": "c"
+    }
+}

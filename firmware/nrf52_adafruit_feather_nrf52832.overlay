@@ -1,0 +1,81 @@
+// To get started, press Ctrl+Space to bring up the completion menu and view the available nodes.
+
+// You can also use the buttons in the sidebar to perform actions on nodes.
+// Actions currently available include:
+
+// * Enabling / disabling the node
+// * Adding the bus to a bus
+// * Removing the node
+// * Connecting ADC channels
+
+// For more help, browse the DeviceTree documentation at https://docs.zephyrproject.org/latest/guides/dts/index.html
+// You can also visit the nRF DeviceTree extension documentation at https://docs.nordicsemi.com/bundle/nrf-connect-vscode/page/guides/ncs_configure_app.html#devicetree-support-in-the-extension
+
+
+&spi0 {
+	status = "okay";
+	compatible = "nordic,nrf-spi";
+	pinctrl-0 = <&spi0_default>;
+	pinctrl-1 = <&spi0_sleep>;
+	pinctrl-names = "default", "sleep";
+	cs-gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
+	fxls89xx: fxls89xx@0 {
+		zephyr,pm-device-runtime-auto;
+		compatible = "nxp,fxls89xx";
+		reg = <0x0>;
+		spi-max-frequency = <4000000>;
+		int1-gpios = <&gpio0 15 GPIO_PULL_UP>;
+		int2-gpios = <&gpio0 16 GPIO_PULL_UP>;
+	};
+};
+
+&pinctrl {
+	spi0_default: spi0_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_MISO,	0, 	14)>,
+					<NRF_PSEL(SPIM_MOSI, 	0, 	13)>,
+					<NRF_PSEL(SPIM_SCK, 	0, 	12)>;
+		};
+	};
+
+	spi0_sleep: spi0_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_MISO,	0, 	14)>,
+					<NRF_PSEL(SPIM_MOSI, 	0, 	13)>,
+					<NRF_PSEL(SPIM_SCK, 	0, 	12)>;
+			low-power-enable;
+		};
+	};
+};
+
+/ {
+	inputs: zephyr,user {
+		dock_conn-gpios = <&gpio0 30 GPIO_PULL_DOWN>;
+		io-channels = <&adc 0>;
+	};
+
+	buttons {
+		dockbutton: dock_button {
+			gpios = <&gpio0 27 GPIO_PULL_DOWN>;
+			label = "dock_button";
+		};
+	};
+};
+dockled: &led1 {
+};
+
+diceled: &led0 {
+};
+&adc {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_6";			// Gain of 1/6 with internal reference (0.6V) results in range of +-3.6V
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
+		zephyr,resolution = <12>;
+	};
+};

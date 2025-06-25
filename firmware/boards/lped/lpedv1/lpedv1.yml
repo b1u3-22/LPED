@@ -1,0 +1,11 @@
+identifier: lpedv1/nrf52810
+name: LPEDv1 board
+vendor: lped
+type: mcu
+arch: arm
+ram: 24
+flash: 192
+toolchain:
+  - zephyr
+supported: 
+  - gpio
