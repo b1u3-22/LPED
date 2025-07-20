@@ -1,0 +1,11 @@
+CONFIG_ARM_MPU=y
+CONFIG_HW_STACK_PROTECTION=y
+
+# Set 32kHz source to be synthesized from high speed source
+CONFIG_CLOCK_CONTROL=y
+CONFIG_CLOCK_CONTROL_NRF=y
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
+
+# Enable power management for accelerometer
+CONFIG_PM_DEVICE=y
+CONFIG_PM_DEVICE_RUNTIME=y

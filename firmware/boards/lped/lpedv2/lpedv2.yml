@@ -1,0 +1,11 @@
+identifier: lpedv2/nrf52833
+name: LPEDv2 board
+vendor: lped
+type: mcu
+arch: arm
+ram: 128
+flash: 512
+toolchain:
+  - zephyr
+supported: 
+  - gpio
