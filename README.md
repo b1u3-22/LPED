@@ -33,4 +33,10 @@ Highly customizable Low-power Electronic Playing Dice
 	* The printable models were made in FreeCAD 
 * `/firmware` - Zephyr firmware running on the dice
 
-
+## Versioning info 
+* Repository uses `major.minor` format
+	* `major` is incremented with each major hardware revision or significant firmware update that causes the implementation to be incompatible with previous version
+	* `minor` is used for firmware fixes and patches that don't affect backwards compatibility
+* PCBs have their own version code on them that follows standard `major.minor` format
+	* `major` is used for drastic changes to the boards, such as MCU swap or change of pinout
+	* `minor` is used for hardware fixes and patches
