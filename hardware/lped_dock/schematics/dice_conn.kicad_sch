@@ -268,7 +268,7 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 99.06) (xy 134.62 99.06)
+			(xy 133.35 91.44) (xy 134.62 91.44)
 		)
 		(stroke
 			(width 0)
@@ -278,17 +278,7 @@
 	)
 	(wire
 		(pts
-			(xy 143.51 95.25) (xy 133.35 95.25)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "88e4eac5-d615-4665-90a1-7ef9c5586b7e")
-	)
-	(wire
-		(pts
-			(xy 143.51 91.44) (xy 133.35 91.44)
+			(xy 143.51 87.63) (xy 133.35 87.63)
 		)
 		(stroke
 			(width 0)
@@ -308,7 +298,7 @@
 	)
 	(wire
 		(pts
-			(xy 134.62 99.06) (xy 134.62 100.33)
+			(xy 134.62 91.44) (xy 134.62 92.71)
 		)
 		(stroke
 			(width 0)
@@ -316,27 +306,7 @@
 		)
 		(uuid "a2ce000c-d045-4f7b-9c2e-613e6164aa68")
 	)
-	(wire
-		(pts
-			(xy 143.51 87.63) (xy 133.35 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fd4104b2-055b-4cd0-8044-6b25b4f0da76")
-	)
 	(label "CONN"
-		(at 134.62 91.44 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0f665cd6-250a-482b-b721-fd57084b3454")
-	)
-	(label "BUTTON"
 		(at 134.62 87.63 0)
 		(effects
 			(font
@@ -344,7 +314,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "3c0e73ac-0619-412a-bbc6-c74bcdf15b35")
+		(uuid "0f665cd6-250a-482b-b721-fd57084b3454")
 	)
 	(label "V_{OUT}"
 		(at 134.62 83.82 0)
@@ -355,38 +325,6 @@
 			(justify left bottom)
 		)
 		(uuid "6490c21c-99cc-46fc-a978-1254629e74ea")
-	)
-	(label "LED"
-		(at 134.62 95.25 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "97ca2742-5db8-4141-a3f7-b2f7105ac095")
-	)
-	(hierarchical_label "LED"
-		(shape output)
-		(at 143.51 95.25 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "0662751a-e998-4571-9793-08d707e5cc43")
-	)
-	(hierarchical_label "BUTTON"
-		(shape output)
-		(at 143.51 87.63 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "205811ff-9d76-463d-a704-7b1ed1e5c5bf")
 	)
 	(hierarchical_label "V_{OUT}"
 		(shape input)
@@ -401,7 +339,7 @@
 	)
 	(hierarchical_label "CONN"
 		(shape input)
-		(at 143.51 91.44 0)
+		(at 143.51 87.63 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -418,8 +356,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "2dca3e4a-613b-432f-9584-fd4bae8e1a0e")
-		(property "Reference" "J3"
+		(uuid "5173d817-8b2f-472a-877e-b48f68a3b440")
+		(property "Reference" "J2"
 			(at 130.81 86.106 0)
 			(effects
 				(font
@@ -427,7 +365,7 @@
 				)
 			)
 		)
-		(property "Value" "BUTTON"
+		(property "Value" "CONN"
 			(at 127.508 87.63 0)
 			(effects
 				(font
@@ -464,142 +402,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "cef5535c-8a70-481b-9634-efc9db995855")
-		)
-		(instances
-			(project "lped_dock"
-				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "J3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 128.27 91.44 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "5173d817-8b2f-472a-877e-b48f68a3b440")
-		(property "Reference" "J4"
-			(at 130.81 89.916 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "CONN"
-			(at 127.508 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Connector_Pin:Pin_D0.9mm_L10.0mm_W2.4mm_FlatFork"
-			(at 128.27 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 128.27 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 128.27 91.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
 			(uuid "2cb6d97f-18e4-4a71-af8b-c41116eee187")
 		)
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "J4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 128.27 95.25 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "82a0b5c9-ac25-48f4-a507-f30d16f60663")
-		(property "Reference" "J5"
-			(at 130.81 93.726 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "LED"
-			(at 127.508 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "Connector_Pin:Pin_D0.9mm_L10.0mm_W2.4mm_FlatFork"
-			(at 128.27 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 128.27 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 128.27 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "98729d55-1563-4b6c-9658-1fdf29a4e677")
-		)
-		(instances
-			(project "lped_dock"
-				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "J5")
+					(reference "J2")
 					(unit 1)
 				)
 			)
@@ -614,7 +422,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "91a2699c-4635-4c6e-afc4-e4906154dcc5")
-		(property "Reference" "J2"
+		(property "Reference" "J1"
 			(at 130.81 82.296 0)
 			(effects
 				(font
@@ -663,7 +471,7 @@
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "J2")
+					(reference "J1")
 					(unit 1)
 				)
 			)
@@ -671,15 +479,15 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x01_Pin")
-		(at 128.27 99.06 0)
+		(at 128.27 91.44 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "d0a68486-52c6-4d5b-afd9-6e27ee151f6a")
-		(property "Reference" "J6"
-			(at 130.81 97.536 0)
+		(property "Reference" "J3"
+			(at 130.81 89.916 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -687,7 +495,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 125.476 99.06 0)
+			(at 125.476 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -695,7 +503,7 @@
 			)
 		)
 		(property "Footprint" "Connector_Pin:Pin_D0.9mm_L10.0mm_W2.4mm_FlatFork"
-			(at 128.27 99.06 0)
+			(at 128.27 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -704,7 +512,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 128.27 99.06 0)
+			(at 128.27 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -713,7 +521,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x01, script generated"
-			(at 128.27 99.06 0)
+			(at 128.27 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -727,7 +535,7 @@
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "J6")
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -735,7 +543,7 @@
 	)
 	(symbol
 		(lib_id "power:Earth")
-		(at 134.62 100.33 0)
+		(at 134.62 92.71 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -743,8 +551,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "dadaa4ba-69eb-4ad3-834c-c44f73563f32")
-		(property "Reference" "#PWR02"
-			(at 134.62 106.68 0)
+		(property "Reference" "#PWR01"
+			(at 134.62 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -753,7 +561,7 @@
 			)
 		)
 		(property "Value" "Earth"
-			(at 134.62 105.41 0)
+			(at 134.62 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -762,7 +570,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 134.62 100.33 0)
+			(at 134.62 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -771,7 +579,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 134.62 100.33 0)
+			(at 134.62 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -780,7 +588,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"Earth\""
-			(at 134.62 100.33 0)
+			(at 134.62 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -794,7 +602,7 @@
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d/8c8f9994-8fdf-4504-abf2-e4b10712cebd"
-					(reference "#PWR02")
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)

@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.762,
-          "height": 1.524,
-          "width": 1.524
+          "drill": 0.0,
+          "height": 3.35,
+          "width": 1.225
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -626,10 +626,6 @@
     [
       "8c8f9994-8fdf-4504-abf2-e4b10712cebd",
       "Dice Connector"
-    ],
-    [
-      "88658dc9-2587-4e44-aef5-956eaa7083e7",
-      "Peripherals"
     ]
   ],
   "text_variables": {}
