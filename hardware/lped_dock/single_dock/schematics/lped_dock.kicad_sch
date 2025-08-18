@@ -10,110 +10,16 @@
 		(rev "1")
 		(company "Jiří Sedlák (xsedla2e)")
 	)
-	(lib_symbols
-		(symbol "Mechanical:MountingHole"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim yes)
-			(in_bom no)
-			(on_board yes)
-			(property "Reference" "H"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Mounting Hole without connection"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "mounting hole"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "MountingHole*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "MountingHole_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
-					(stroke
-						(width 1.27)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-	)
+	(lib_symbols)
 	(junction
-		(at 152.4 83.82)
+		(at 128.27 82.55)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "50f933b5-5192-4f25-bd51-206aa2857062")
+		(uuid "77307925-8f97-4b85-97dc-f500be9a7ff6")
 	)
 	(wire
 		(pts
-			(xy 152.4 83.82) (xy 156.21 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2a96676e-bc20-4c05-943a-afff0b80e3d3")
-	)
-	(wire
-		(pts
-			(xy 152.4 86.36) (xy 156.21 86.36)
+			(xy 128.27 85.09) (xy 130.81 85.09)
 		)
 		(stroke
 			(width 0)
@@ -123,17 +29,17 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 83.82) (xy 152.4 86.36)
+			(xy 80.01 82.55) (xy 85.09 82.55)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "543b4d87-c5be-4ca1-a8ce-fc13f407c353")
+		(uuid "58d05699-1686-4e2e-b2c6-a7b50e11e8d3")
 	)
 	(wire
 		(pts
-			(xy 143.51 83.82) (xy 152.4 83.82)
+			(xy 125.73 82.55) (xy 128.27 82.55)
 		)
 		(stroke
 			(width 0)
@@ -143,80 +49,56 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 83.82) (xy 125.73 83.82)
+			(xy 80.01 85.09) (xy 85.09 85.09)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6a9fbd67-ab61-47dd-b90e-1922110c316e")
+		(uuid "6b38f4c2-926f-43b9-af69-3b554640bda7")
 	)
-	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 73.66 118.11 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "bdfa35af-e2b4-43c3-9874-796e0f6f5260")
-		(property "Reference" "H1"
-			(at 76.2 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
+	(wire
+		(pts
+			(xy 80.01 87.63) (xy 85.09 87.63)
 		)
-		(property "Value" "M3"
-			(at 76.2 119.38 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad"
-			(at 73.66 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+		(uuid "8a494f6c-781f-4768-b97e-3da9952f8c0c")
+	)
+	(wire
+		(pts
+			(xy 102.87 82.55) (xy 107.95 82.55)
 		)
-		(property "Datasheet" "~"
-			(at 73.66 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
-		(property "Description" "Mounting Hole without connection"
-			(at 73.66 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
+		(uuid "8f878376-0a1f-454b-8d57-84470b57b311")
+	)
+	(wire
+		(pts
+			(xy 128.27 82.55) (xy 130.81 82.55)
 		)
-		(instances
-			(project ""
-				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d"
-					(reference "H1")
-					(unit 1)
-				)
-			)
+		(stroke
+			(width 0)
+			(type default)
 		)
+		(uuid "9b7a9ea7-4c73-4971-b287-c7ae91cbd463")
+	)
+	(wire
+		(pts
+			(xy 128.27 82.55) (xy 128.27 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8342430-edc0-4ec3-b92d-f4a67e45def1")
 	)
 	(sheet
-		(at 125.73 77.47)
+		(at 107.95 80.01)
 		(size 17.78 13.97)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -232,7 +114,7 @@
 		)
 		(uuid "67663e6c-bf4c-41b0-b9e8-8275ab731ceb")
 		(property "Sheetname" "Regulator"
-			(at 125.73 76.7584 0)
+			(at 107.95 79.2984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -241,7 +123,7 @@
 			)
 		)
 		(property "Sheetfile" "regulator.kicad_sch"
-			(at 125.73 92.0246 0)
+			(at 107.95 94.5646 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -250,7 +132,7 @@
 			)
 		)
 		(pin "V_{IN}" input
-			(at 125.73 83.82 180)
+			(at 107.95 82.55 180)
 			(uuid "1d1e722c-d3aa-4284-8d8e-d16500b71a51")
 			(effects
 				(font
@@ -260,7 +142,7 @@
 			)
 		)
 		(pin "V_{OUT}" output
-			(at 143.51 83.82 0)
+			(at 125.73 82.55 0)
 			(uuid "be6dfcae-8a83-4ec4-ae7c-558026638c17")
 			(effects
 				(font
@@ -272,13 +154,13 @@
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d"
-					(page "3")
+					(page "4")
 				)
 			)
 		)
 	)
 	(sheet
-		(at 156.21 77.47)
+		(at 130.81 80.01)
 		(size 17.78 13.97)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -294,7 +176,7 @@
 		)
 		(uuid "8c8f9994-8fdf-4504-abf2-e4b10712cebd")
 		(property "Sheetname" "Dice Connector"
-			(at 156.21 76.7584 0)
+			(at 130.81 79.2984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -303,7 +185,7 @@
 			)
 		)
 		(property "Sheetfile" "dice_conn.kicad_sch"
-			(at 156.21 92.0246 0)
+			(at 130.81 94.5646 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -312,7 +194,7 @@
 			)
 		)
 		(pin "CONN" input
-			(at 156.21 86.36 180)
+			(at 130.81 85.09 180)
 			(uuid "0e7a3071-37eb-43fd-b343-9c4b1a682e4b")
 			(effects
 				(font
@@ -322,7 +204,7 @@
 			)
 		)
 		(pin "V_{OUT}" input
-			(at 156.21 83.82 180)
+			(at 130.81 82.55 180)
 			(uuid "952e1fdb-32af-4f68-8338-1495eaa20868")
 			(effects
 				(font
@@ -334,13 +216,13 @@
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d"
-					(page "4")
+					(page "5")
 				)
 			)
 		)
 	)
 	(sheet
-		(at 92.71 77.47)
+		(at 62.23 80.01)
 		(size 17.78 13.97)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -356,7 +238,7 @@
 		)
 		(uuid "ae3cf3e4-69ae-41da-ac8a-8e93d807a1e9")
 		(property "Sheetname" "USB"
-			(at 92.71 76.7584 0)
+			(at 62.23 79.2984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -365,7 +247,7 @@
 			)
 		)
 		(property "Sheetfile" "usb.kicad_sch"
-			(at 92.71 92.0246 0)
+			(at 62.23 94.5646 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -374,8 +256,130 @@
 			)
 		)
 		(pin "V_{BUS}" output
-			(at 110.49 83.82 0)
+			(at 80.01 82.55 0)
 			(uuid "78ff50f8-8226-483f-a984-fe853049f644")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "D+" output
+			(at 80.01 85.09 0)
+			(uuid "30f6af65-0f8d-4b59-a330-b06f7186db0e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "D-" output
+			(at 80.01 87.63 0)
+			(uuid "51f258b6-77be-48d3-ba51-39fde87eb2b4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "S_{USB_CONN}" output
+			(at 80.01 91.44 0)
+			(uuid "57f053cd-941f-4a94-aaeb-528752bb9094")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "lped_dock"
+				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 85.09 80.01)
+		(size 17.78 13.97)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "fde2c8e8-6598-4ffb-83f6-0c88e4699b8a")
+		(property "Sheetname" "Battery Charger"
+			(at 85.09 79.2984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "battery.kicad_sch"
+			(at 85.09 94.5646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "D+" input
+			(at 85.09 85.09 180)
+			(uuid "f1715e4d-edd1-4c2e-bd8f-55aef6bd29fb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "D-" input
+			(at 85.09 87.63 180)
+			(uuid "4f47d08d-2b3c-40eb-8ab9-372d62c2e385")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "S_{CHG}" input
+			(at 102.87 91.44 0)
+			(uuid "09916c3b-b159-471f-bbe2-0847bda81dbb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "V_{BUS}" input
+			(at 85.09 82.55 180)
+			(uuid "5739ae3b-196d-4ed5-84ff-a3887bce812f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "V_{SYS}" output
+			(at 102.87 82.55 0)
+			(uuid "318d51d7-1c9b-4b92-a71a-dad0d5ab7de5")
 			(effects
 				(font
 					(size 1.27 1.27)

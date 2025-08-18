@@ -1,0 +1,30 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "db2ba921-3f84-4cae-a228-d45512c6fd54")
+	(paper "A4")
+	(lib_symbols)
+	(hierarchical_label "S_{CHG}"
+		(shape input)
+		(at 119.38 68.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "16fee8a0-de66-4caa-8828-4d583ab34379")
+	)
+	(hierarchical_label "S_{USB_CONN}"
+		(shape input)
+		(at 119.38 72.39 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "d616c61d-5ea4-4751-b912-9d8cd65563c3")
+	)
+)
