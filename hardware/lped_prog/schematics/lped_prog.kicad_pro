@@ -52,7 +52,24 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "hole_clearance|105270000|83070000|59dfe889-2adf-49a4-93d2-7112cb8738e2|32027977-ff71-4f10-b096-3911c75cd291",
+          ""
+        ],
+        [
+          "hole_clearance|105270000|83070000|59dfe889-2adf-49a4-93d2-7112cb8738e2|981bc96c-3fb0-49a3-8397-6eec51d193f6",
+          ""
+        ],
+        [
+          "hole_clearance|111370000|83070000|79519cde-176d-4649-bbcb-99ce230ff314|8315eb3d-de2e-443b-8129-38f0b8ac6f18",
+          ""
+        ],
+        [
+          "hole_clearance|111370000|83070000|79519cde-176d-4649-bbcb-99ce230ff314|b10e9dea-a328-4c16-9dab-ddd311f195e1",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -442,6 +459,7 @@
       "single_global_label": "ignore",
       "unannotated": "error",
       "unconnected_wire_endpoint": "warning",
+      "undefined_netclass": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",
       "wire_dangling": "error"
