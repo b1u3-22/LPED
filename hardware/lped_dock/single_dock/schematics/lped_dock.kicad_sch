@@ -209,7 +209,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
 			(at 43.18 120.65 0)
 			(effects
 				(font
@@ -433,16 +433,6 @@
 				(justify right)
 			)
 		)
-		(pin "S_{USB_CONN}" output
-			(at 80.01 91.44 0)
-			(uuid "57f053cd-941f-4a94-aaeb-528752bb9094")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
 		(instances
 			(project "lped_dock"
 				(path "/5c78e66f-0328-4fd7-bcaa-ded4a2671f1d"
@@ -503,16 +493,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-			)
-		)
-		(pin "S_{CHG}" input
-			(at 102.87 91.44 0)
-			(uuid "09916c3b-b159-471f-bbe2-0847bda81dbb")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 			)
 		)
 		(pin "V_{BUS}" input
