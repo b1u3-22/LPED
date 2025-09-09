@@ -13,8 +13,10 @@ Highly customizable Low-power Electronic Playing Dice
 
 ### Hardware 
 
-* The dice uses a nRF52810 microcontroller with FXLS8974CF accelerometer
+* The dice uses a nRF52833 microcontroller with FXLS8974CF accelerometer
 * Instead of battery it uses hybrid super-capacitor with 20 F capacity that provides up to 8 hours of game time with charging time of 15 minutes
+* RGB LED on-board the dice
+* The charger has separate battery providing up to two full dice charges
 * The 3D models of the charging dock have been optimized for 3D printing and they do not require any supports
 	* However, one heat inserts and 4 magnets (6x6x2mm) are necessary for the assembly
 
