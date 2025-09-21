@@ -7176,7 +7176,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_0402_1005Metric"
+		(property "Footprint" "Diode_SMD:D_SOD-123F"
 			(at 48.26 148.59 90)
 			(effects
 				(font
