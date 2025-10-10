@@ -12,26 +12,26 @@
 		zephyr,code-partition = &slot0_partition;
 	};
 
-	leds {
-		compatible = "gpio-leds";
-		diceled1: dice_led1 {
-			gpios = <&gpio0 20 (1 << 9)>;
-			label = "Dice LED 1";
+	pwmleds {
+		compatible = "pwm-leds";
+		diceled_red: dice_led_red {
+			pwms = <&pwm0 0 20000 0>;
+			label = "Red Dice LED";
 		};
 
-		diceled2: dice_led2 {
-			gpios = <&gpio0 22 (1 << 9)>;
-			label = "Dice LED 2";
+		diceled_green: dice_led_green {
+			pwms = <&pwm0 1 20000 0>;
+			label = "Green Dice LED";
 		};
 
-		dockled: dock_led {
-			gpios = <&gpio0 17 (1 << 9)>;
-			label = "Dock LED";
+		diceled_blue: dice_led_blue {
+			pwms = <&pwm0 2 20000 0>;
+			label = "Blue Dice LED";
 		};
 	};
 
 	inputs: zephyr,user {
-		dock_conn-gpios = <&gpio0 15 GPIO_PULL_DOWN>;
+		dock_conn-gpios = <&gpio0 0 GPIO_PULL_DOWN>;
 		io-channels = <&adc 0>;
 	};
 };
@@ -102,4 +102,11 @@
 			reg = <0x00028000 DT_SIZE_K(32)>;
 		};
 	};
+};
+
+&pwm0 {
+	status = "okay";
+	pinctrl-0 = <&pwm0_default>;
+	pinctrl-1 = <&pwm0_sleep>;
+	pinctrl-names = "default", "sleep";
 };
