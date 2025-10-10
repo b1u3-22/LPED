@@ -107,4 +107,35 @@ config LPED_BT_STATE_INTERVAL
         Defines how many milliseconds are between accelerometer and capacitor state readings
         when the die is connected to a client application
 
+config LPED_LED_DURATION_RESOLUTION
+    int "Defines the steps in duration"
+    default 100
+    help 
+        Defines the steps in duration in the animation effect. For example value 50ms would 
+        result in possible range of 50ms to 800ms (2**4 * 50).
+
+config LPED_LED_FADE_STEP
+    int "Defines the step size for fading LED effects"
+    default 7
+    help 
+        Defines the step size for fading LED effects
+
+config LPED_LED_FADE_TYPE_FAST_DURATION 
+    int "Defines the speed of fast fade"
+    default 150 
+    help 
+        Defines how long will the fast fade effect take. This is additional time for each color. 
+
+config LPED_LED_FADE_TYPE_SLOW_DURATION 
+    int "Defines the speed of slow fade"
+    default 300 
+    help 
+        Defines how long will the slow fade effect take. This is additional time for each color. 
+
+config LPED_LED_EFFECTS_STACK_SIZE
+    int "Defines size in bytes for the LED effects thread"
+    default 1024
+    help 
+        Defines size in bytes for the LED effects thread
+
 endmenu
