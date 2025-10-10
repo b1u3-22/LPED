@@ -14,49 +14,26 @@
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/adc.h>
-#include "../led_defs.h"
-
-#define ERROR_TIME K_MSEC(2000)
-
-/**
- * @brief Pin where dice LED is connected
- */
-#define DICE_LED    GPIO_DT_SPEC_GET(DT_NODELABEL(diceled), gpios)
-
-/**
- * @brief Pin where capacitor is connected
- */
-#define DICE_CAP    ADC_DT_SPEC_GET(DT_NODELABEL(inputs))
+#include <zephyr/drivers/pwm.h>
+#include "../color/animation.h"
+#include "../color/animation_defs.h"
 
 /**
  * @brief Structure representing the physical dice
  */
 typedef struct phy_dice_dev {
-    struct k_timer led_blink_timer; // Timer used for LED blinking
-    struct k_timer led_error_timer; // Timer used for ERROR blink
-    struct k_timer led_side_timer;  // Timer used for normal side blinking
-    struct gpio_dt_spec led;        // Pin where the dice LED is connected
-    struct adc_dt_spec cap;         // Pin used for capacitor state reading
+    struct pwm_dt_spec led_r;               // Pin where the dice red LED is connected
+    struct pwm_dt_spec led_g;               // Pin where the dice green LED is connected
+    struct pwm_dt_spec led_b;               // Pin where the dice blue LED is connected
+    struct adc_dt_spec cap;                 // Pin used for capacitor state reading
+
+    struct k_thread led_effects_thread;     // Thread that is running all LED effects
 } phy_dice_dev_t;
 
 /**
  * @brief   Initialize the physical dice: init timers, led and cap pins
  */
 void dice_phy_init(phy_dice_dev_t *dice_dev);
-
-/**
- * @brief Start blinking the dice LED with given speed
- * @param dice_dev  Dice
- * @param speed     How fast the LED should blink
- */
-void dice_led_start_blink(phy_dice_dev_t *dice_dev, led_speed_t speed);
-
-/**
- * @brief   Immediately stop the dice LED blinking, if no blinking is running, this function has no effect
- *          The LED will be turned OFF
- * @param dice_dev  Dice
- */
-void dice_led_stop_blink(phy_dice_dev_t *dice_dev);
 
 /**
  * @brief Turn the dice LED off, note this will not stop ongoing blinking
@@ -68,41 +45,40 @@ void dice_led_off(phy_dice_dev_t *dice_dev);
  * @brief Turn the dice LED on, note this will not stop ongoing blinking
  * @param dice_dev Dice
  */
-void dice_led_on(phy_dice_dev_t *dice_dev);
+void dice_led_on_color(phy_dice_dev_t *dice_dev, const color_t *color);
+
+/**
+ * @brief Turn the dice LED on, note this will not stop ongoing blinking
+ * @param dice_dev Dice
+ */
+void dice_led_on_params(phy_dice_dev_t *dice_dev, uint8_t *red, uint8_t *green, uint8_t *blue);
+
+/**
+ * @brief Turn the dice LED on, note this will not stop ongoing blinking
+ * @param dice_dev Dice
+ */
+void dice_led_on_index(phy_dice_dev_t *dice_dev, const uint8_t *index);
+
+/**
+ * @brief Run given animation immediately. Note that this will stop ongoing animations
+ * @param   dice_dev Dice
+ * @param   animation animation that should be run         
+ */
+void dice_led_start_animation(phy_dice_dev_t *dice_dev, const animation_t *animation);
 
 /**
  * @brief Start error blinking the dice LED
  * @param dice_dev Dice
  */
-void dice_led_start_error_blink(phy_dice_dev_t *dice_dev);
+void dice_led_start_error_blink_animation(phy_dice_dev_t *dice_dev);
 
 /**
  * @brief Turn the dice LED on for #ERROR_TIME then turn it off
  * @param dice_def Dice
  */
-void dice_led_start_error_solid(phy_dice_dev_t *dice_dev);
+void dice_led_start_error_solid_animation(phy_dice_dev_t *dice_dev);
 
-/**
- * @brief   Stop ongoing error blinking, if no blinking is running, this function has no effect
- *          The LED will be turned OFF
- * @param dice_dev 
- */
-void dice_led_stop_error(phy_dice_dev_t *dice_dev);
-
-/**
- * @brief Start blinking the dice LED based on the given side number and led mode
- * @param dice_dev          Dice
- * @param side_number       Number on the side
- * @param side_blink_mode   Sides blink mode
- */
-void dice_led_start_side(phy_dice_dev_t *dice_dev, uint8_t *side_number, uint8_t side_blink_mode);
-
-/**
- * @brief   Stop ongoing side blinking, if no blinking is running, this function has no effect
- *          The LED will be turned OFF
- * @param dice_dev 
- */
-void dice_led_stop_side(phy_dice_dev_t *dice_dev);
+void dice_led_start_connected_animation(phy_dice_dev_t *dice_dev);
 
 /**
  * @brief   Get current capacitor state of charge as unsigned eight bit integer,

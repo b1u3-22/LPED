@@ -26,7 +26,6 @@ void acc_configure_int() {
 
 static struct gpio_callback acc_int1_callback_gpio;
 //static struct gpio_callback int2_callback_gpio;
-static struct gpio_callback int_dock_button_callback_gpio;
 static struct gpio_callback int_dock_conn_callback_gpio;
 
 static struct dock_dev dock;
@@ -40,7 +39,6 @@ static uint8_t cap_state_interval_counter = 0;
 // debounce timers for interrupts
 static uint32_t acc_int1_debounce = 0;
 static uint32_t acc_int2_debounce = 0;
-static uint32_t dock_btn_debounce = 0;
 static uint32_t dock_con_debounce = 0;
 
 // worker threads invoked from ISRs
@@ -66,8 +64,6 @@ static uint8_t error_blink;
 static uint8_t cap_state;
 void acc_int1_callback(struct k_work *work) {
 	if (fxls89xx_get_int_pin_state(acc, fxls89xx_interrupt_pin_int1)) {
-		dock_led_stop_blink(&dock);
-
 		storage_get_current_dice_definition(&dice_def);
 
 		determine_side(
@@ -83,16 +79,15 @@ void acc_int1_callback(struct k_work *work) {
 		storage_get_side_blink(&side_blink);
 		storage_get_error_blink(&error_blink);
 
-		if (side_blink) 	dice_led_stop_side(&phy_dice);
-		if (error_blink) 	dice_led_stop_error(&phy_dice);
+		if (side_blink || error_blink) 	dice_led_off(&phy_dice);
 
 		if (side_def.number != 0)   {
-			if (side_blink) dice_led_start_side(&phy_dice, &side_def.number, side_def.blink_mode);
+			if (side_blink) dice_led_start_animation(&phy_dice, &side_def.animation);
 			dice_bt_broadcast(&side_def.number, bt_message_dice_number);
 		}
 
 		else if (error_blink) {
-			dice_led_start_error_solid(&phy_dice);
+			dice_led_start_error_solid_animation(&phy_dice);
 		}
 
 		if (!IS_ENABLED(CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG)) {
@@ -120,23 +115,6 @@ void acc_int1_callback(struct k_work *work) {
 void acc_int2_callback(struct k_work *work) {
 }
 
-void dock_btn_callback(struct k_work *work) {
-	if (bt_dice.status == bt_status_invisible) return;
-	k_msleep(10);
-
-	// Rising edge
-	if (dock_get_button_state()) {
-		printk("Dock button pressed\n");
-		dock_start_button_long_press_timer(&dock);
-	}
-
-	// Falling edge
-	else {
-		printk("Dock button released\n");
-		dock_stop_button_long_press_timer(&dock);
-	}
-}
-
 void dock_con_callback(struct k_work *work) {
 	if (ignore_dock_disconnect && bt_dice.status == bt_status_connectable) return;
 
@@ -145,18 +123,17 @@ void dock_con_callback(struct k_work *work) {
 	if (dock_get_conn_state()) {
 		printk("Charging dock connected\n");
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_standby);
-		dice_bt_set_visible(&bt_dice);
-		dice_led_stop_blink(&phy_dice);
+		dice_bt_set_bondable(&bt_dice);
+		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 	}
 
 	// Falling edge
 	else {
 		printk("Charging dock disconnected\n");
 		dice_bt_set_invisible(&bt_dice);
-		dock_led_stop_blink(&dock);
 		acc_configure_int();
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_active);
-		dice_led_stop_blink(&phy_dice);
+		dice_led_off(&phy_dice);
 	}
 }       
 
@@ -201,12 +178,6 @@ void acc_int2_isr(const struct device *dev, struct gpio_callback *callback_gpio,
 	acc_int2_debounce = k_uptime_get_32();
 }
 
-void dock_btn_isr(const struct device *dev, struct gpio_callback *callback_gpio, uint32_t pins) {
-	if (dock_btn_debounce + CONFIG_LPED_DOCK_DEBOUNCE_TIME > k_uptime_get_32()) return;
-	k_work_submit(&dock_btn_work);
-	dock_btn_debounce = k_uptime_get_32();
-}
-
 void dock_con_isr(const struct device *dev, struct gpio_callback *callback_gpio, uint32_t pins) {
 	if (dock_con_debounce + CONFIG_LPED_DOCK_DEBOUNCE_TIME > k_uptime_get_32()) return;
 	k_work_submit(&dock_con_work);
@@ -214,36 +185,28 @@ void dock_con_isr(const struct device *dev, struct gpio_callback *callback_gpio,
 }
 
 // Workers for handling bluetooth interaction - Pairing button long press, visibility timedout and bonding timedout
-void dock_long_press_callback(struct k_work *work) 
-{
-	if (bt_dice.status != bt_status_connectable) {
-		dice_bt_set_bondable(&bt_dice);
-		dock_led_start_blink(&dock, led_speed_normal);
-	}
-}
-
 void dice_visible_timeout_callback(struct k_work *work) 
 {
 	dice_bt_set_invisible(&bt_dice);
-	dock_led_stop_blink(&dock);
+	dice_led_off(&phy_dice);
 }
 
 void dice_connectable_timeout_callback(struct k_work *work) 
 {
 	dice_bt_set_invisible(&bt_dice);
-	dock_led_stop_blink(&dock);
+	dice_led_off(&phy_dice);
 }
 
 void dice_connected_timeout_callback(struct k_work *work) 
 {
 	ignore_dock_disconnect = false;
 	dice_bt_set_invisible(&bt_dice);
-	dock_led_stop_blink(&dock);
+	dice_led_off(&phy_dice);
 }
 
 void dice_connected_callback(struct k_work *work) 
 {
-	dock_led_start_connection(&dock);
+	dice_led_start_connected_animation(&phy_dice);
 }
 
 void dice_disconnected_callback(struct k_work *work) 
@@ -255,13 +218,12 @@ void dice_disconnected_callback(struct k_work *work)
 
 	if (bt_dice.status == bt_status_invisible) {
 		dice_bt_set_invisible(&bt_dice);
-		dock_led_stop_blink(&dock);
+		dice_led_off(&phy_dice);
 	}
 
 	else {
 		dice_bt_set_bondable(&bt_dice);
-		dock_led_stop_connection(&dock);
-		dock_led_start_blink(&dock, led_speed_normal);
+		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 	}
 }
 
@@ -290,20 +252,17 @@ int main(void)
 	
 	dice_phy_init(&phy_dice);
 
-	dock_init(&dock, K_SECONDS(CONFIG_LPED_DOCK_BUTTON_LONG_PRESS_DURATION), &dock_pair_work);
+	dock_init(&dock);
 
 	k_work_init(&acc_int1_work, acc_int1_callback);
 	k_work_init(&acc_int2_work, acc_int2_callback);
-	k_work_init(&dock_btn_work, dock_btn_callback);
 	k_work_init(&dock_con_work, dock_con_callback);
-	k_work_init(&dock_pair_work, dock_long_press_callback);
 	k_work_init(&dice_bonding_timeout_work, dice_connectable_timeout_callback);
 	k_work_init(&dice_visible_timeout_work, dice_visible_timeout_callback);
 	k_work_init(&dice_bonded_timeout_work, dice_connected_timeout_callback);
 	k_work_init(&dice_connected_work, dice_connected_callback);
 	k_work_init(&dice_disconnected_work, dice_disconnected_callback);
 
-	dock_button_int_init(&int_dock_button_callback_gpio, dock_btn_isr);
 	dock_conn_int_init(&int_dock_conn_callback_gpio, dock_con_isr);
 
 	// Accelerometer setup
@@ -314,7 +273,6 @@ int main(void)
 	acc_configure_int();
 	fxls89xx_interrupt_bind(acc, fxls89xx_interrupt_source_wake_out, fxls89xx_interrupt_pin_int1, GPIO_INT_EDGE_BOTH, &acc_int1_callback_gpio, acc_int1_isr);
 
-	dock_led_off(&dock);
 	dice_led_off(&phy_dice);
 
 	k_msleep(CONFIG_LPED_ACC_BOOT_DURATION);

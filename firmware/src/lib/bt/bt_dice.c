@@ -68,6 +68,8 @@ static const struct bt_uuid_128 gatt_dice_update_uuid =             BT_UUID_INIT
 static const struct bt_uuid_128 gatt_accelerometer_uuid =           BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B7));
 static const struct bt_uuid_128 gatt_command_uuid =                 BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B8));
 static const struct bt_uuid_128 gatt_cap_state_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
+static const struct bt_uuid_128 gatt_current_side_uuid =            BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
+
 
 static uint8_t side_blink;
 static uint8_t error_blink;
@@ -159,6 +161,8 @@ static ssize_t gatt_read_dice_update(struct bt_conn *conn, const struct bt_gatt_
 static ssize_t gatt_read_accelerometer(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
+    bt_dice_global->get_acceleration_callback(acc_values);
+
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(acc_values));
 }
@@ -167,6 +171,8 @@ static ssize_t gatt_read_cap_state(struct bt_conn *conn, const struct bt_gatt_at
 {
     const char *value = attr->user_data;
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+
+    bt_dice_global->get_cap_state_callback(&cap_state);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t));
 }
 
@@ -636,8 +642,8 @@ void dice_bt_init(
     dice_bt_load_data();
 
     // init timers and workers for periodic functions
-    k_work_init(&dice_bt_state_work, dice_bt_state_callback);
-    k_timer_init(&dice_bt_state_timer, dice_bt_state_timer_callback, NULL);
+    // k_work_init(&dice_bt_state_work, dice_bt_state_callback);
+    // k_timer_init(&dice_bt_state_timer, dice_bt_state_timer_callback, NULL);
 }
 
 void dice_bt_set_invisible(bt_dice_dev_t *dice)

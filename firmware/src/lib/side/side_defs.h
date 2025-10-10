@@ -8,6 +8,9 @@
 #ifndef LIB_SIDE_SIDE_DEFS_H_
 #define LIB_SIDE_SIDE_DEFS_H_
 
+#include "../color/animation.h"
+#include "../color/color_defs.h"
+
 #define ACC_1G      1024    /** Value of acceleration equal to 1g */
 #define VEC_X       0       /** Position of the x axis vector component in side_def vector array*/
 #define VEC_Y       1       /** Position of the y axis vector component in side_def vector array */
@@ -26,7 +29,7 @@
  */
 typedef struct side_definition {
     uint8_t number;                     // Number on this side
-    uint8_t blink_mode;                 // Selected blink mode
+    animation_t animation;              // animation for this side
     int16_t vector[3];                  // Acceleration vector
 } side_definition_t;
 
@@ -64,34 +67,208 @@ static const dice_definition_t dice_6_side = {
     },
     .sides = {
         {
-            .number = 2,
-            .blink_mode = 2,
-            .vector = {0, 0, ACC_1G}
-        },
-        {
             .number = 1,
-            .blink_mode = 2,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 1, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
             .vector = {0, ACC_1G, 0}
         },
         {
+            .number = 2,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 3, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
+            .vector = {0, 0, ACC_1G}
+        },
+        {
             .number = 3,
-            .blink_mode = 2,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 5, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_GREEN_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
             .vector = {ACC_1G, 0, 0}
         },
         {
             .number = 4,
-            .blink_mode = 2,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 7, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_GREEN_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
             .vector = {-ACC_1G, 0, 0}
         },
         {
-            .number = 6,
-            .blink_mode = 2,
-            .vector = {0, -ACC_1G, 0}
+            .number = 5,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 9, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_GREEN_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
+            .vector = {0, 0, -ACC_1G}
         },
         {
-            .number = 5,
-            .blink_mode = 2,
-            .vector = {0, 0, -ACC_1G}
+            .number = 6,
+            .animation = {
+                .fade_type = fade_type_slow,
+                .number_of_steps = 7, 
+                .steps = {
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_BLUE_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_GREEN_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_RED_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_OFF_INDEX,
+                        .duration = 2
+                    },
+                    {
+                        .color_index = COLOR_GREEN_INDEX,
+                        .duration = 2
+                    }
+                }
+            },
+            .vector = {0, -ACC_1G, 0}
         },
     }
 };

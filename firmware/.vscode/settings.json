@@ -38,6 +38,8 @@
         "charconv": "c",
         "chrono": "c",
         "format": "c",
-        "ranges": "c"
+        "ranges": "c",
+        "cstdlib": "c",
+        "compare": "c"
     }
 }
