@@ -6,7 +6,6 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(lped)
 
-#target_sources(app PRIVATE src/lib/bma400/bma400.c)
 target_sources(app PRIVATE src/lib/phy/phy_dice.c)
 target_sources(app PRIVATE src/lib/side/side.c)
 target_sources(app PRIVATE src/lib/bt/bt_dice.c)
