@@ -61,7 +61,9 @@ static side_definition_t side_def;
 static dice_definition_t dice_def;
 static uint8_t side_blink;
 static uint8_t error_blink;
+static uint8_t comm_mode;
 static uint8_t cap_state;
+
 void acc_int1_callback(struct k_work *work) {
 	if (fxls89xx_get_int_pin_state(acc, fxls89xx_interrupt_pin_int1)) {
 		storage_get_current_dice_definition(&dice_def);
@@ -83,11 +85,12 @@ void acc_int1_callback(struct k_work *work) {
 
 		if (side_def.number != 0)   {
 			if (side_blink) dice_led_start_animation(&phy_dice, &side_def.animation);
-			dice_bt_broadcast(&side_def.number, bt_message_dice_number);
+			dice_bt_send(&bt_dice, &side_def.number, bt_message_dice_number);
 		}
 
-		else if (error_blink) {
-			dice_led_start_error_solid_animation(&phy_dice);
+		else {
+			if (error_blink) dice_led_start_error_solid_animation(&phy_dice);
+			dice_bt_send(&bt_dice, NULL, bt_message_unknown);
 		}
 
 		if (!IS_ENABLED(CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG)) {
@@ -102,13 +105,15 @@ void acc_int1_callback(struct k_work *work) {
 		}
 	}
 
+	// Interrupt event started (movement started)
 	else {
 		if (IS_ENABLED(CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG)) {
 			dice_get_cap_state(&phy_dice, &cap_state);
-			dice_bt_broadcast(&cap_state, bt_message_rolling);
+			dice_bt_send(&bt_dice, &cap_state, bt_message_rolling);
 		}
-
-		else dice_bt_broadcast(0x00, bt_message_rolling);
+		else {
+			dice_bt_send(&bt_dice, NULL, bt_message_rolling);
+		}
 	}
 }
 
@@ -117,20 +122,26 @@ void acc_int2_callback(struct k_work *work) {
 
 void dock_con_callback(struct k_work *work) {
 	if (ignore_dock_disconnect && bt_dice.status == bt_status_connectable) return;
-
 	k_msleep(10);
+	storage_get_comm_mode(&comm_mode);
+
 	// Rising edge
 	if (dock_get_conn_state()) {
 		printk("Charging dock connected\n");
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_standby);
-		dice_bt_set_bondable(&bt_dice);
-		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+
+		if (bt_dice.status != bt_status_connected || !comm_mode) {
+			dice_bt_set_bondable(&bt_dice);
+			dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+		}
 	}
 
 	// Falling edge
 	else {
 		printk("Charging dock disconnected\n");
-		dice_bt_set_invisible(&bt_dice);
+		if (!comm_mode) {
+			dice_bt_set_invisible(&bt_dice);
+		}
 		acc_configure_int();
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_active);
 		dice_led_off(&phy_dice);
@@ -146,7 +157,6 @@ void bt_dice_get_acceleration_values_callback(int16_t *accel_values) {
     accel_values[1] = fxls89xx_get_acceleration(acc, fxls89xx_axis_y);
     accel_values[2] = fxls89xx_get_acceleration(acc, fxls89xx_axis_z);
     fxls89xx_set_int2_function(acc, fxls89xx_int2_function_interrupt);
-										
 }
 
 void bt_dice_get_cap_state_callback(uint8_t *cap_state) {

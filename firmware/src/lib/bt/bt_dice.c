@@ -17,7 +17,7 @@ void broadcast(const uint8_t *message, bt_message_t message_type)
     mfg_data[1] = BR_MFG_MSB;
     mfg_data[2] = id;
     mfg_data[3] = message_type;
-    mfg_data[4] = *message;
+    mfg_data[4] = message != NULL ? *message : 0x00;
     mfg_data[5] = 0x00; // Reserved for future use that could require 16-bit numbers in messages
 
     static const struct bt_data ad[] = {
@@ -67,12 +67,14 @@ static const struct bt_uuid_128 gatt_selected_dice_def_uuid =       BT_UUID_INIT
 static const struct bt_uuid_128 gatt_dice_update_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B6));
 static const struct bt_uuid_128 gatt_accelerometer_uuid =           BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B7));
 static const struct bt_uuid_128 gatt_command_uuid =                 BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B8));
-static const struct bt_uuid_128 gatt_cap_state_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
-static const struct bt_uuid_128 gatt_current_side_uuid =            BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
+static const struct bt_uuid_128 gatt_comm_mode_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
+
+static const struct bt_uuid_128 gatt_dice_number_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
 
 
 static uint8_t side_blink;
 static uint8_t error_blink;
+static uint8_t comm_mode;
 static dice_definition_t dice_def;
 static uint8_t supported_dice_defs_ids[MAX_DICE_DEFS];
 static dice_definition_header_t selected_dice_def;
@@ -80,7 +82,14 @@ static uint8_t current_dice_def_id;
 static uint8_t new_dice_def_id;
 static int16_t acc_values[3];
 static uint8_t command_buf;
-static uint8_t cap_state;
+
+/* 
+    This value is used to notify the app when in connected communication mode. 
+    Valid number sides are only uint8_t, the second byte is used for status, such as rolling or unknown.
+    For all values @see bt_message_t enum 
+*/
+static uint8_t dice_number[2];
+
 
 // Work for the function that runs periodically in the background 
 struct k_work dice_bt_state_work;
@@ -99,7 +108,6 @@ void dice_bt_state_callback(struct k_work *work)
     }
 
     bt_dice_global->get_acceleration_callback(acc_values);
-    bt_dice_global->get_cap_state_callback(&cap_state);
 }
 
 void dice_bt_state_timer_callback() 
@@ -115,6 +123,7 @@ void dice_bt_load_data()
     storage_get_supported_dice_ids(supported_dice_defs_ids);
     storage_get_side_blink(&side_blink);
     storage_get_error_blink(&error_blink);
+    storage_get_comm_mode(&comm_mode);
     storage_get_current_dice_definition(&dice_def);
     storage_get_dice_definition_header(&supported_dice_defs_ids[0], &selected_dice_def);
     storage_get_current_dice_id(&current_dice_def_id);
@@ -160,19 +169,18 @@ static ssize_t gatt_read_dice_update(struct bt_conn *conn, const struct bt_gatt_
 
 static ssize_t gatt_read_accelerometer(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
-    const char *value = attr->user_data;
     bt_dice_global->get_acceleration_callback(acc_values);
+    const char *value = attr->user_data;
 
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(acc_values));
 }
 
-static ssize_t gatt_read_cap_state(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
+static ssize_t gatt_read_comm_mode(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
 
-    bt_dice_global->get_cap_state_callback(&cap_state);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t));
 }
 
@@ -201,6 +209,20 @@ static ssize_t gatt_write_error_blink(struct bt_conn *conn, const struct bt_gatt
     // Change error blink to requested value and update it
     storage_set_error_blink(value);
     error_blink = *value >= 1;
+
+    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    return len;
+}
+
+static ssize_t gatt_write_comm_mode(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, uint16_t len, uint16_t offset, uint8_t flags) 
+{
+    if (len < 1) return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+
+    const uint8_t *value = buf;
+
+    // Change error blink to requested value and update it
+    storage_set_comm_mode(value);
+    comm_mode = *value >= 1;
 
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
     return len;
@@ -436,6 +458,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Side blink"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_error_blink_uuid.uuid,
         BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
@@ -447,6 +470,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Error blink"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_dice_def_uuid.uuid,
         BT_GATT_CHRC_READ, 
@@ -458,6 +482,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Full dice definition"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_supported_dice_defs_ids_uuid.uuid,
         BT_GATT_CHRC_READ,
@@ -469,6 +494,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Supported dice definition IDs"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_current_dice_def_id_uuid.uuid,
         BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
@@ -480,6 +506,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Current dice definition ID"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_selected_dice_def_uuid.uuid,
         BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
@@ -491,6 +518,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Selected dice definition header"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_dice_update_uuid.uuid,
         BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
@@ -502,6 +530,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Side/dice definition updates"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_accelerometer_uuid.uuid,
         BT_GATT_CHRC_READ,
@@ -513,6 +542,7 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Acceleration values"
     ),
+
     BT_GATT_CHARACTERISTIC(
         &gatt_command_uuid.uuid,
         BT_GATT_CHRC_WRITE,
@@ -524,17 +554,29 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Commands"
     ),
+
     BT_GATT_CHARACTERISTIC(
-        &gatt_cap_state_uuid.uuid,
-        BT_GATT_CHRC_READ,
-        BT_GATT_PERM_READ,
-        gatt_read_cap_state, NULL, &cap_state
+        &gatt_comm_mode_uuid.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
+        gatt_read_comm_mode, gatt_write_comm_mode, &comm_mode
     ),
     BT_GATT_DESCRIPTOR(
         BT_UUID_GATT_CUD,
         BT_GATT_PERM_READ,
-        gatt_read_cud, NULL, "Capacitor state"
+        gatt_read_cud, NULL, "Communication mode"
     ),
+
+    BT_GATT_CHARACTERISTIC(
+        &gatt_dice_number_uuid.uuid,
+        BT_GATT_CHRC_INDICATE,
+        BT_GATT_PERM_NONE,
+        NULL, NULL, &dice_number
+    ),
+    BT_GATT_CCC(
+        NULL, 
+        BT_GATT_PERM_READ | BT_GATT_PERM_WRITE
+    )
 );
 
 void connected(struct bt_conn *connection, uint8_t error) {
@@ -544,6 +586,7 @@ void connected(struct bt_conn *connection, uint8_t error) {
     }
 
     bt_dice_global->conn = bt_conn_ref(connection);
+    bt_dice_global->status = bt_status_connected;
     printk("Connected\n");
 
     k_timer_stop(&bt_dice_global->bonding_timeout_timer);
@@ -561,6 +604,7 @@ void disconnected(struct bt_conn *connection, uint8_t error) {
     if (bt_dice_global->conn) {
         bt_conn_unref(bt_dice_global->conn);
         bt_dice_global->conn = NULL;
+        bt_dice_global->status = bt_status_connectable;
     }
 
     k_work_submit(bt_dice_global->disconnected_work);
@@ -637,6 +681,8 @@ void dice_bt_init(
     dice->get_cap_state_callback = get_cap_state_callback;
     dice->set_dock_ignore_callback = set_dock_ignore_callback;
 
+    dice->dice_number_att = bt_gatt_find_by_uuid(dice_svc.attrs, dice_svc.attr_count, &gatt_dice_number_uuid.uuid);
+
     bt_dice_global = dice;
 
     dice_bt_load_data();
@@ -670,7 +716,7 @@ void dice_bt_set_visible(bt_dice_dev_t *dice)
         }
     }
 
-    if (dice->status == bt_status_connectable) {
+    if (dice->status == bt_status_connectable || dice->status == bt_status_connected) {
         if (bt_le_adv_stop()) {
             printk("Failed to stop connectable advertising\n");
             return;
@@ -700,7 +746,7 @@ void dice_bt_set_visible(bt_dice_dev_t *dice)
 void dice_bt_set_bondable(bt_dice_dev_t *dice)
 {
     // if device is already bondable, only reset the timer
-    if (dice->status == bt_status_connectable) {
+    if (dice->status == bt_status_connectable || dice->status == bt_status_connected) {
         k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
         return;
     }
@@ -728,4 +774,30 @@ void dice_bt_set_bondable(bt_dice_dev_t *dice)
     dice->status = bt_status_connectable;
     k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
     k_timer_stop(&dice->visible_timeout_timer);
+}
+
+void dice_bt_notify(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type)
+{
+    if (!dice->conn || dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
+
+    dice_number[NF_MESSAGE_POS] = message != NULL ? *message : 0x00;
+    dice_number[NF_STATUS_POS] = message_type; 
+
+    struct bt_gatt_indicate_params params = {
+        .attr = dice->dice_number_att, 
+        .data = dice_number, 
+        .len  = sizeof(dice_number),
+        .func = NULL
+    };
+
+    bt_gatt_indicate(dice->conn, &params);
+}
+
+void dice_bt_send(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type)
+{
+    static uint8_t comm_mode;
+    storage_get_comm_mode(&comm_mode);
+
+    if (comm_mode)  dice_bt_notify(dice, message, message_type);
+    else            dice_bt_broadcast(message, message_type);
 }

@@ -27,6 +27,9 @@
 #define BR_MFG_MSB                  0x01    // Manufacturer identifier MSB
 #define BR_MFG_SIZE                 6       // Total length of manufacturer data
 
+#define NF_STATUS_POS               1       // Index of byte used as status in notify message
+#define NF_MESSAGE_POS              0       // Index of byte used for the message in notify message
+
 /**
  * @brief ID used in broadcast messages
  */
@@ -37,9 +40,9 @@ static uint8_t id __attribute__((unused)) = 0;
  */
 typedef enum {
     bt_message_dice_number  = 0x01, // Landed number
-    bt_message_sides_number = 0x02, // Number of sides
-    bt_message_cap_state    = 0x03, // Capacitor state 
-    bt_message_rolling      = 0x04  // Dice is rolling
+    bt_message_cap_state    = 0x02, // Capacitor state (not to be used when in connected communication mode as status identifier)
+    bt_message_rolling      = 0x03, // Dice is rolling
+    bt_message_unknown      = 0x04  // Dice landed on non-valid number (e.g. landed on edge or outside of the RANGE)
 } bt_message_t;
 
 /**
@@ -48,7 +51,8 @@ typedef enum {
 typedef enum {
     bt_status_invisible,    // Dice is invisible, BT turned off
     bt_status_visible,      // Dice is visible, non-connectable
-    bt_status_connectable   // Dice is visible and connectable or connected
+    bt_status_connectable,  // Dice is visible and connectable
+    bt_status_connected     // Dice is visible and connected
 } bt_status_t;
 
 /**
@@ -111,6 +115,8 @@ typedef struct bt_dice_dev {
     void (*get_acceleration_callback)(int16_t *buffer); // Callback for getting acceleration values
     void (*get_cap_state_callback)(uint8_t *buffer);    // Callback for getting capacitor state value
     void (*set_dock_ignore_callback)(bool ignore);      // Callback for changing the dock connection detection
+
+    struct bt_gatt_attr *dice_number_att;               // Dice number attribute
 } bt_dice_dev_t;
 
 /**
@@ -179,5 +185,21 @@ void dice_bt_set_visible(bt_dice_dev_t *dice);
  */
 void dice_bt_set_bondable(bt_dice_dev_t *dice);
 
+/**
+ * @brief   Send indication to the connected app that there was a change in dice number, 
+ *          this can only be done when in connected state and when the other side 
+ *          subscribed to the indications
+ * @param message       Message to send  
+ * @param message_type  Type of the message
+ */
+void dice_bt_notify(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type);
+
+/**
+ * @brief   Wrapper around dice_bt_broadcast() and dice_bt_notify() that uses either one
+ *          based on communication settings
+ * @param message       Message to send
+ * @param message_type  Type of the message
+ */
+void dice_bt_send(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type);
 
 #endif // LIB_BT_BT_DICE_H_

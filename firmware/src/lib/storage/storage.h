@@ -20,15 +20,18 @@
 #include "../side/side.h"
 
 // Addresses
+// TODO: Create new "FLAGS" field that would contain all three - side and error blinking and communication mode settings
 #define SIDE_BLINK_ID           0x01
 #define ERROR_BLINK_ID          0x02
-#define SUPPORTED_DICE_IDS_ID   0x03
-#define CURRENT_DICE_ID         0x04
+#define COMM_MODE_ID            0x03
+#define SUPPORTED_DICE_IDS_ID   0x04
+#define CURRENT_DICE_ID         0x05
 #define DICE_DEF_OFFSET         10
 
 // Default values
-#define SIDE_BLINK_DEFAULT_VAL    1
-#define ERROR_BLINK_DEFAULT_VAL   1
+#define SIDE_BLINK_DEFAULT_VAL      1
+#define ERROR_BLINK_DEFAULT_VAL     1
+#define COMM_MODE_DEFAULT_VAL       1
 
 // Constants
 #define EMPTY_ID        0
@@ -158,6 +161,17 @@ void storage_get_error_blink(uint8_t *error_blink);
  */
 void storage_set_error_blink(const uint8_t *error_blink);
 
+/**
+ * @brief   Get current setting for communication mode
+ *          if this value wasn't set before, it will be set to connection (true)
+ * @param   error_blink where to save the value from flash
+ */
+void storage_get_comm_mode(uint8_t *comm_mode);
 
+/**
+ * @brief   Set current setting for communication mode to given value
+ * @param   side_blink new value for communication mode 
+ */
+void storage_set_comm_mode(const uint8_t *comm_mode);
 
 #endif // LIB_STORAGE_STORAGE_H_
