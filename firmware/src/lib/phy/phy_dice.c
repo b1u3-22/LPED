@@ -221,12 +221,19 @@ void dice_get_cap_state(phy_dice_dev_t *dice_dev, uint8_t *cap_state) {
     if (adc_sequence_init_dt(&dice_dev->cap, &sequence)) {
         printf("Failed to init read sequence\n");
         *cap_state = 0;
+        return;
     }
 
     if (adc_read_dt(&dice_dev->cap, &sequence)) {
         printf("Failed to read from Dice CAP\n");
         *cap_state = 0;
+        return;
     }
 
     *cap_state = ((uint8_t) (buffer >> (sequence.resolution - 8)));
+
+
+    // TODO: add more precise way to portray the soc, such as LUT table with recorded known values for each 10%
+    // map the reading to 0 - 100 value, multiplication first to keep precision
+    *cap_state = (*cap_state - CONFIG_LPED_CAP_MIN_READING) * 100 / (UINT8_MAX - CONFIG_LPED_CAP_MIN_READING);
 }

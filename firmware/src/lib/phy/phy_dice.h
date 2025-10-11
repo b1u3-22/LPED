@@ -81,8 +81,7 @@ void dice_led_start_error_solid_animation(phy_dice_dev_t *dice_dev);
 void dice_led_start_connected_animation(phy_dice_dev_t *dice_dev);
 
 /**
- * @brief   Get current capacitor state of charge as unsigned eight bit integer,
- *          255 represents voltage 3.6V
+ * @brief   Get current capacitor state of charge as precentage (0 - 100)
  * @param   dice_dev    Dice
  * @param   cap_state   Where to save the read cap state
  */

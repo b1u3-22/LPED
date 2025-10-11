@@ -138,4 +138,10 @@ config LPED_LED_EFFECTS_STACK_SIZE
     help 
         Defines size in bytes for the LED effects thread
 
+config LPED_CAP_MIN_READING
+    int "Defines the value that represents 0% charge of the cap"
+    default 121
+    help
+       Defines the value that represents 0% charge of the cap
+
 endmenu
