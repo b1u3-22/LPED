@@ -16,7 +16,11 @@
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/services/bas.h>
+
 #include <libfxls89xx.h>
+
+
 #include "../dock/dock.h"
 #include "../storage/storage.h"
 #include "../side/side.h"
@@ -26,9 +30,6 @@
 #define BR_MFG_LSB                  0x1F    // Manufacturer identifier LSB    
 #define BR_MFG_MSB                  0x01    // Manufacturer identifier MSB
 #define BR_MFG_SIZE                 6       // Total length of manufacturer data
-
-#define NF_STATUS_POS               1       // Index of byte used as status in notify message
-#define NF_MESSAGE_POS              0       // Index of byte used for the message in notify message
 
 /**
  * @brief ID used in broadcast messages
@@ -185,21 +186,7 @@ void dice_bt_set_visible(bt_dice_dev_t *dice);
  */
 void dice_bt_set_bondable(bt_dice_dev_t *dice);
 
-/**
- * @brief   Send indication to the connected app that there was a change in dice number, 
- *          this can only be done when in connected state and when the other side 
- *          subscribed to the indications
- * @param message       Message to send  
- * @param message_type  Type of the message
- */
-void dice_bt_notify(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type);
-
-/**
- * @brief   Wrapper around dice_bt_broadcast() and dice_bt_notify() that uses either one
- *          based on communication settings
- * @param message       Message to send
- * @param message_type  Type of the message
- */
-void dice_bt_send(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type);
+void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t status);
+void dice_bt_set_cap_state(bt_dice_dev_t *dice, uint8_t *state);
 
 #endif // LIB_BT_BT_DICE_H_

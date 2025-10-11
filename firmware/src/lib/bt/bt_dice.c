@@ -83,11 +83,6 @@ static uint8_t new_dice_def_id;
 static int16_t acc_values[3];
 static uint8_t command_buf;
 
-/* 
-    This value is used to notify the app when in connected communication mode. 
-    Valid number sides are only uint8_t, the second byte is used for status, such as rolling or unknown.
-    For all values @see bt_message_t enum 
-*/
 static uint8_t dice_number[2];
 
 
@@ -776,12 +771,12 @@ void dice_bt_set_bondable(bt_dice_dev_t *dice)
     k_timer_stop(&dice->visible_timeout_timer);
 }
 
-void dice_bt_notify(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type)
+void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t status)
 {
     if (!dice->conn || dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
 
-    dice_number[NF_MESSAGE_POS] = message != NULL ? *message : 0x00;
-    dice_number[NF_STATUS_POS] = message_type; 
+    dice_number[0] = number != NULL ? *number : 0x00;
+    dice_number[1] = status;
 
     struct bt_gatt_indicate_params params = {
         .attr = dice->dice_number_att, 
@@ -793,11 +788,6 @@ void dice_bt_notify(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t me
     bt_gatt_indicate(dice->conn, &params);
 }
 
-void dice_bt_send(bt_dice_dev_t *dice, uint8_t *message, const bt_message_t message_type)
-{
-    static uint8_t comm_mode;
-    storage_get_comm_mode(&comm_mode);
-
-    if (comm_mode)  dice_bt_notify(dice, message, message_type);
-    else            dice_bt_broadcast(message, message_type);
+void dice_bt_set_cap_state(bt_dice_dev_t *dice, uint8_t *state) {
+    bt_bas_set_battery_level(*state);
 }

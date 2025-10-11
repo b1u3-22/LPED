@@ -65,6 +65,8 @@ static uint8_t comm_mode;
 static uint8_t cap_state;
 
 void acc_int1_callback(struct k_work *work) {
+	storage_get_comm_mode(&comm_mode);
+
 	if (fxls89xx_get_int_pin_state(acc, fxls89xx_interrupt_pin_int1)) {
 		storage_get_current_dice_definition(&dice_def);
 
@@ -85,12 +87,16 @@ void acc_int1_callback(struct k_work *work) {
 
 		if (side_def.number != 0)   {
 			if (side_blink) dice_led_start_animation(&phy_dice, &side_def.animation);
-			dice_bt_send(&bt_dice, &side_def.number, bt_message_dice_number);
+
+			if (comm_mode) 	dice_bt_set_dice_number(&bt_dice, &side_def.number, bt_message_dice_number);
+			else 			dice_bt_broadcast(&side_def.number, bt_message_dice_number);
 		}
 
 		else {
 			if (error_blink) dice_led_start_error_solid_animation(&phy_dice);
-			dice_bt_send(&bt_dice, NULL, bt_message_unknown);
+
+			if (comm_mode) 	dice_bt_set_dice_number(&bt_dice, NULL, bt_message_unknown);
+			else 			dice_bt_broadcast(NULL, bt_message_unknown);
 		}
 
 		if (!IS_ENABLED(CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG)) {
@@ -99,7 +105,10 @@ void acc_int1_callback(struct k_work *work) {
 #ifdef CONFIG_LPED_CAP_STATE_INTERVAL
 			if (++cap_state_interval_counter >= CONFIG_LPED_CAP_STATE_INTERVAL) {
 				cap_state_interval_counter = 0;
-				dice_bt_broadcast(&cap_state, bt_message_cap_state);
+				dice_get_cap_state(&phy_dice, &cap_state);
+
+				if (comm_mode) 	dice_bt_set_cap_state(&bt_dice, &cap_state);
+				else 			dice_bt_broadcast(&cap_state, bt_message_cap_state);
 			}
 #endif
 		}
@@ -109,10 +118,20 @@ void acc_int1_callback(struct k_work *work) {
 	else {
 		if (IS_ENABLED(CONFIG_LPED_CAP_STATE_IN_ROLLING_MSG)) {
 			dice_get_cap_state(&phy_dice, &cap_state);
-			dice_bt_send(&bt_dice, &cap_state, bt_message_rolling);
+
+			if (comm_mode) {
+				dice_bt_set_cap_state(&bt_dice, &cap_state);
+				dice_bt_set_dice_number(&bt_dice, NULL, bt_message_rolling);
+			}
+
+			else {
+				dice_bt_broadcast(&cap_state, bt_message_rolling);
+			}
 		}
+
 		else {
-			dice_bt_send(&bt_dice, NULL, bt_message_rolling);
+			if (comm_mode) 	dice_bt_set_dice_number(&bt_dice, NULL, bt_message_rolling);
+			else 			dice_bt_broadcast(NULL, bt_message_rolling);
 		}
 	}
 }
