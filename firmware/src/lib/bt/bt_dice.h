@@ -10,13 +10,12 @@
 #ifndef LIB_BT_BT_DICE_H_
 #define LIB_BT_BT_DICE_H_
 
+#include <zephyr/kernel.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
-#include <zephyr/kernel.h>
-#include <zephyr/sys/reboot.h>
 #include <libfxls89xx.h>
 #include "../dock/dock.h"
 #include "../storage/storage.h"

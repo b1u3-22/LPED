@@ -388,7 +388,7 @@ static ssize_t gatt_write_command(struct bt_conn *conn, const struct bt_gatt_att
     switch (*value)
     {
         case bt_command_restart:
-            sys_reboot(SYS_REBOOT_COLD);
+            //sys_reboot(SYS_REBOOT_COLD);
             break;
 
         case bt_command_clear_memory:
