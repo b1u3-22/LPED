@@ -18,14 +18,14 @@
 	pinctrl-0 = <&spi0_default>;
 	pinctrl-1 = <&spi0_sleep>;
 	pinctrl-names = "default", "sleep";
-	cs-gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
+	cs-gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;
 	fxls89xx: fxls89xx@0 {
 		zephyr,pm-device-runtime-auto;
 		compatible = "nxp,fxls89xx";
 		reg = <0x0>;
 		spi-max-frequency = <4000000>;
-		int1-gpios = <&gpio0 15 GPIO_PULL_UP>;
-		int2-gpios = <&gpio0 16 GPIO_PULL_UP>;
+		int1-gpios = <&gpio0 4 GPIO_PULL_UP>;
+		int2-gpios = <&gpio0 5 GPIO_PULL_UP>;
 	};
 };
 
@@ -60,12 +60,26 @@
 			label = "dock_button";
 		};
 	};
-};
-dockled: &led1 {
+
+	pwmleds {
+		compatible = "pwm-leds";
+		diceled_red: dice_led_red {
+			pwms = <&pwm0 0 20000 0>;
+			label = "Red Dice LED";
+		};
+
+		diceled_green: dice_led_green {
+			pwms = <&pwm0 1 20000 0>;
+			label = "Green Dice LED";
+		};
+
+		diceled_blue: dice_led_blue {
+			pwms = <&pwm0 2 20000 0>;
+			label = "Blue Dice LED";
+		};
+	};
 };
 
-diceled: &led0 {
-};
 &adc {
 	status = "okay";
 	#address-cells = <1>;
@@ -77,5 +91,13 @@ diceled: &led0 {
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
 		zephyr,input-positive = <NRF_SAADC_AIN0>;
 		zephyr,resolution = <12>;
+	};
+};
+
+&pwm0_default {
+	group1 {
+		psels = <NRF_PSEL(PWM_OUT0, 0, 16)>,
+				<NRF_PSEL(PWM_OUT1, 0, 15)>,
+				<NRF_PSEL(PWM_OUT2, 0, 7)>;
 	};
 };
