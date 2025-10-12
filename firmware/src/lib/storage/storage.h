@@ -133,7 +133,7 @@ void storage_get_current_dice_definition(dice_definition_t *new_dice_def);
  * @param   id          ID of definition to get
  * @param   dice_def    definition where to save the found one or empty definition if none found
  */
-void storage_get_dice_definition(uint8_t *id, dice_definition_t *dice_def);
+void storage_get_dice_definition(const uint8_t *id, dice_definition_t *dice_def);
 
 /**
  * @brief   Get current setting for side number blinking

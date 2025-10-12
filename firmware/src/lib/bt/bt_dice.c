@@ -60,24 +60,23 @@ static const struct bt_uuid_128 gatt_dice_svc_uuid =                BT_UUID_INIT
 // Custom GATT characteristics
 static const struct bt_uuid_128 gatt_side_blink_uuid =              BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B0));
 static const struct bt_uuid_128 gatt_error_blink_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B1));
-static const struct bt_uuid_128 gatt_dice_def_uuid =                BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B2));
-static const struct bt_uuid_128 gatt_supported_dice_defs_ids_uuid = BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B3));
-static const struct bt_uuid_128 gatt_current_dice_def_id_uuid =     BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B4));
-static const struct bt_uuid_128 gatt_selected_dice_def_uuid =       BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B5));
-static const struct bt_uuid_128 gatt_dice_update_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B6));
-static const struct bt_uuid_128 gatt_accelerometer_uuid =           BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B7));
-static const struct bt_uuid_128 gatt_command_uuid =                 BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B8));
-static const struct bt_uuid_128 gatt_comm_mode_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
-
-static const struct bt_uuid_128 gatt_dice_number_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
+static const struct bt_uuid_128 gatt_supported_dice_defs_ids_uuid = BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B2));
+static const struct bt_uuid_128 gatt_current_dice_def_id_uuid =     BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B3));
+static const struct bt_uuid_128 gatt_selected_dice_def_uuid =       BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B4));
+static const struct bt_uuid_128 gatt_dice_update_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B5));
+static const struct bt_uuid_128 gatt_accelerometer_uuid =           BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B6));
+static const struct bt_uuid_128 gatt_command_uuid =                 BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B7));
+static const struct bt_uuid_128 gatt_comm_mode_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B8));
+static const struct bt_uuid_128 gatt_dice_number_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
+static const struct bt_uuid_128 gatt_selected_side_def_uuid =       BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
 
 
 static uint8_t side_blink;
 static uint8_t error_blink;
 static uint8_t comm_mode;
-static dice_definition_t dice_def;
+static side_definition_t side_def;
 static uint8_t supported_dice_defs_ids[MAX_DICE_DEFS];
-static dice_definition_header_t selected_dice_def;
+static dice_definition_t selected_dice_def;
 static uint8_t current_dice_def_id;
 static uint8_t new_dice_def_id;
 static int16_t acc_values[3];
@@ -119,9 +118,8 @@ void dice_bt_load_data()
     storage_get_side_blink(&side_blink);
     storage_get_error_blink(&error_blink);
     storage_get_comm_mode(&comm_mode);
-    storage_get_current_dice_definition(&dice_def);
-    storage_get_dice_definition_header(&supported_dice_defs_ids[0], &selected_dice_def);
     storage_get_current_dice_id(&current_dice_def_id);
+    storage_get_dice_definition(&current_dice_def_id, &selected_dice_def);
     new_dice_def_id = 0;
 }
 
@@ -148,13 +146,6 @@ static ssize_t gatt_read_selected_dice_def(struct bt_conn *conn, const struct bt
 	return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(dice_definition_header_t));
 }
 
-static ssize_t gatt_read_dice_def(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset)  
-{
-    const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(dice_definition_t));
-}
-
 static ssize_t gatt_read_dice_update(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
@@ -177,6 +168,14 @@ static ssize_t gatt_read_comm_mode(struct bt_conn *conn, const struct bt_gatt_at
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t));
+}
+
+static ssize_t gatt_read_selected_side_def(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
+{
+    const char *value = attr->user_data;
+    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(side_definition_t));
 }
 
 // ============ GATT WRITE CALLBACKS ============
@@ -229,8 +228,7 @@ static ssize_t gatt_write_current_dice_def_id(struct bt_conn *conn, const struct
     // Change the used dice def id to requested one
     storage_set_current_dice_id(value);
 
-    // Update the data and id for currently used dice definition
-    storage_get_current_dice_definition(&dice_def);
+    // Update the id for currently used dice definition
     current_dice_def_id = *value;
 
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
@@ -242,15 +240,27 @@ static ssize_t gatt_write_selected_dice_def(struct bt_conn *conn, const struct b
     const uint8_t *value = buf;
 
     // get the requested dice header
-    storage_get_dice_definition_header(value, &selected_dice_def);
+    storage_get_dice_definition(value, &selected_dice_def);
 
     // check if it exists
-    if (selected_dice_def.id == EMPTY_ID) return BT_GATT_ERR(BT_ATT_ERR_ATTRIBUTE_NOT_FOUND);
+    if (selected_dice_def.header.id == EMPTY_ID) return BT_GATT_ERR(BT_ATT_ERR_ATTRIBUTE_NOT_FOUND);
 
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
     return len;
 }
 
+static ssize_t gatt_write_selected_side_def(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, uint16_t len, uint16_t offset, uint8_t flags) 
+{
+    const uint8_t *value = buf;
+
+    if (*value > DICE_DEF_SIDES_MAX) return BT_GATT_ERR(BT_ATT_ERR_OUT_OF_RANGE);
+
+    // get the requested side definition (dice def preloaded, just change the currently loaded side def)
+    side_def = selected_dice_def.sides[*value];
+
+    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    return len;
+}
 
 static bt_update_header_t *update_params;
 static dice_definition_t update_dice_def;
@@ -307,9 +317,6 @@ static ssize_t gatt_write_dice_update(struct bt_conn *conn, const struct bt_gatt
 
             // Update the definition
             storage_update_dice_definition(&update_dice_def);
-
-            // Refresh the currently selected dice def if it was updated
-            if (update_dice_def.header.id == dice_def.header.id) storage_get_dice_definition(&update_dice_def.header.id, &dice_def);
             break;
 
         case bt_update_action_side_add:
@@ -331,9 +338,6 @@ static ssize_t gatt_write_dice_update(struct bt_conn *conn, const struct bt_gatt
 
             // Update the side definition
             storage_update_dice_definition(&update_dice_def);
-
-            // Refresh the currently used definition if needed 
-            if (update_dice_def.header.id == dice_def.header.id) storage_get_dice_definition(&update_dice_def.header.id, &dice_def);
             break;
 
         case bt_update_action_side_delete:
@@ -362,9 +366,6 @@ static ssize_t gatt_write_dice_update(struct bt_conn *conn, const struct bt_gatt
 
             // Update the dice definition
             storage_update_dice_definition(&update_dice_def);
-
-            // Refresh the currently used definition if needed 
-            if (update_dice_def.header.id == dice_def.header.id) storage_get_dice_definition(&update_dice_def.header.id, &dice_def);
             break;
 
         case bt_update_action_side_update:
@@ -385,9 +386,7 @@ static ssize_t gatt_write_dice_update(struct bt_conn *conn, const struct bt_gatt
             // update the side definition, save it and reload it for the current dice definition provided in gatt char ...03
             update_dice_def.sides[update_params->side_index] = *update_side_def;
             storage_update_dice_definition(&update_dice_def);
-            
-            // Refresh the currently used definition if needed 
-            if (update_dice_def.header.id == dice_def.header.id) storage_get_dice_definition(&update_dice_def.header.id, &dice_def);
+        
             break;
 
         default:
@@ -467,18 +466,6 @@ BT_GATT_SERVICE_DEFINE(
     ),
 
     BT_GATT_CHARACTERISTIC(
-        &gatt_dice_def_uuid.uuid,
-        BT_GATT_CHRC_READ, 
-        BT_GATT_PERM_READ,
-        gatt_read_dice_def, NULL, &dice_def
-    ),
-    BT_GATT_DESCRIPTOR(
-        BT_UUID_GATT_CUD,
-        BT_GATT_PERM_READ,
-        gatt_read_cud, NULL, "Full dice definition"
-    ),
-
-    BT_GATT_CHARACTERISTIC(
         &gatt_supported_dice_defs_ids_uuid.uuid,
         BT_GATT_CHRC_READ,
         BT_GATT_PERM_READ,
@@ -506,7 +493,7 @@ BT_GATT_SERVICE_DEFINE(
         &gatt_selected_dice_def_uuid.uuid,
         BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
         BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
-        gatt_read_selected_dice_def, gatt_write_selected_dice_def, &selected_dice_def
+        gatt_read_selected_dice_def, gatt_write_selected_dice_def, &selected_dice_def.header
     ),
     BT_GATT_DESCRIPTOR(
         BT_UUID_GATT_CUD,
@@ -571,7 +558,19 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CCC(
         NULL, 
         BT_GATT_PERM_READ | BT_GATT_PERM_WRITE
-    )
+    ),
+
+    BT_GATT_CHARACTERISTIC(
+        &gatt_selected_side_def_uuid.uuid,
+        BT_GATT_CHRC_READ | BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_READ | BT_GATT_PERM_WRITE,
+        gatt_read_selected_side_def, gatt_write_selected_side_def, &side_def
+    ),
+    BT_GATT_DESCRIPTOR(
+        BT_UUID_GATT_CUD,
+        BT_GATT_PERM_READ,
+        gatt_read_cud, NULL, "Selected side definition"
+    ),
 );
 
 void connected(struct bt_conn *connection, uint8_t error) {

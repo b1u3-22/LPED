@@ -16,7 +16,7 @@ typedef struct animation_step {
 typedef struct animation {
     uint8_t fade_type       : 2;
     uint8_t number_of_steps : 6;
-    animation_step_t steps[20];
+    animation_step_t steps[64];
 } animation_t;
 
 #endif // ANIMATION_H_

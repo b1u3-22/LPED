@@ -207,7 +207,7 @@ void storage_get_current_dice_definition(dice_definition_t *new_dice_def)
     storage_get_dice_definition(&current_id, new_dice_def);
 }
 
-void storage_get_dice_definition(uint8_t *id, dice_definition_t *dice_def)
+void storage_get_dice_definition(const uint8_t *id, dice_definition_t *dice_def)
 {
     uint8_t ids[MAX_DICE_DEFS];
     storage_get_supported_dice_ids(ids);
