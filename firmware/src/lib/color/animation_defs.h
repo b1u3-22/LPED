@@ -81,4 +81,23 @@ static const animation_t animation_bluetooth_blink = {
     }
 };
 
+static const animation_t animation_debug_startup = {
+    .number_of_steps = 3,
+    .fade_type = fade_type_grad,
+    .steps = {
+        {
+            .color_index = COLOR_RED_INDEX,
+            .duration = 9
+        },
+        {
+            .color_index = COLOR_GREEN_INDEX,
+            .duration = 9
+        },
+        {
+            .color_index = COLOR_BLUE_INDEX,
+            .duration = 9
+        }
+    }
+};
+
 #endif // LIB_COLOR_ANIMATION_DEFS_H_

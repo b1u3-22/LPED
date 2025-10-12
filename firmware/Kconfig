@@ -144,4 +144,17 @@ config LPED_CAP_MIN_READING
     help
        Defines the value that represents 0% charge of the cap
 
+config LPED_DEBUG_DISABLE_ACC
+    bool "Enable to skip accelerometer inicialization and imports"
+    default n
+    help
+       Enable to skip accelerometer inicialization and imports. Useful for new board testing and 
+       debugging of accelerometer connection.
+
+config LPED_DEBUG_NO_EXIT
+    bool "Enable to keep the main thread running by placing infinite loop at the end of main"
+    default n 
+    help
+       Enable to keep the main thread running by placing infinite loop at the end of main.
+
 endmenu
