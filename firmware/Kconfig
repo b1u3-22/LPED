@@ -157,4 +157,10 @@ config LPED_DEBUG_NO_EXIT
     help
        Enable to keep the main thread running by placing infinite loop at the end of main.
 
+config LPED_BOOT_ANIMATION 
+    bool "If enabled, a boot animation will be played when the dice finishes booting"
+    default y
+    help
+        If enabled, a boot animation will be played when the dice finishes booting
+
 endmenu

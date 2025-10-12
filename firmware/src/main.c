@@ -358,9 +358,9 @@ int main(void)
 	printk("LPED running\n");
 
 	// run debug animation if acc is disabled
-#ifdef CONFIG_LPED_DEBUG_DISABLE_ACC
-	k_msleep(CONFIG_LPED_ACC_BOOT_DURATION * 2);
-	dice_led_start_animation(&phy_dice, &animation_debug_startup);
+#ifdef CONFIG_LPED_BOOT_ANIMATION
+	k_msleep(CONFIG_LPED_ACC_BOOT_DURATION * 2); // Give space to all worker threads that could turn the LED back off prematurely
+	dice_led_start_animation(&phy_dice, &animation_boot);
 #endif
 
 	return 0;

@@ -81,7 +81,7 @@ static const animation_t animation_bluetooth_blink = {
     }
 };
 
-static const animation_t animation_debug_startup = {
+static const animation_t animation_boot = {
     .number_of_steps = 3,
     .fade_type = fade_type_grad,
     .steps = {
