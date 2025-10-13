@@ -162,24 +162,28 @@ void dock_con_callback(struct k_work *work) {
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_standby);
 #endif
 
-		if (bt_dice.status != bt_status_connected || !comm_mode) {
-			dice_bt_set_bondable(&bt_dice);
-			dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
-		}
-	}
+		dice_bt_set_bondable(&bt_dice);
+		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 
+	}
 
 	// Falling edge
 	else {
 		printk("Charging dock disconnected\n");
 		if (!comm_mode) {
 			dice_bt_set_invisible(&bt_dice);
+			dice_led_off(&phy_dice);
 		}
+
+		else {
+			dice_bt_set_bondable(&bt_dice);
+			dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+		}
+
 #ifndef CONFIG_LPED_DEBUG_DISABLE_ACC
 		acc_configure_int();
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_active);
 #endif
-		dice_led_off(&phy_dice);
 	}
 }       
 
@@ -202,6 +206,7 @@ void bt_dice_get_cap_state_callback(uint8_t *cap_state) {
 
 void bt_dice_set_ignore_dock_connection_callback(bool ignore) {
 	ignore_dock_disconnect = ignore;
+	if (!ignore_dock_disconnect) k_work_submit(&dock_con_work);
 }
 
 #ifndef CONFIG_LPED_DEBUG_DISABLE_ACC

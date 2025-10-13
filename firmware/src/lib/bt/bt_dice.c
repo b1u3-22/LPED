@@ -740,9 +740,15 @@ void dice_bt_set_visible(bt_dice_dev_t *dice)
 void dice_bt_set_bondable(bt_dice_dev_t *dice)
 {
     // if device is already bondable, only reset the timer
-    if (dice->status == bt_status_connectable || dice->status == bt_status_connected) {
+    if (dice->status == bt_status_connectable) {
         k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
         return;
+    }
+
+    // same thing when dice is already connected, this will extend both bonding and bonded timers
+    if (dice->status == bt_status_connected) {
+        k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
+        k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
     }
 
     if (bt_le_adv_stop()) {
@@ -774,8 +780,8 @@ void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t 
 {
     if (!dice->conn || dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
 
-    dice_number[0] = number != NULL ? *number : 0x00;
-    dice_number[1] = status;
+    dice_number[0] = status;
+    dice_number[1] = number != NULL ? *number : 0x00;
 
     struct bt_gatt_indicate_params params = {
         .attr = dice->dice_number_att, 
