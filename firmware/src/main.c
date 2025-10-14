@@ -209,6 +209,10 @@ void bt_dice_set_ignore_dock_connection_callback(bool ignore) {
 	if (!ignore_dock_disconnect) k_work_submit(&dock_con_work);
 }
 
+void bt_dice_set_animation_callback(animation_t *animation) {
+	dice_led_start_animation(&phy_dice, animation);
+}
+
 #ifndef CONFIG_LPED_DEBUG_DISABLE_ACC
 void acc_int1_isr(const struct device *dev, struct gpio_callback *callback_gpio, uint32_t pins) {
 	if (
@@ -301,7 +305,8 @@ int main(void)
 		&dice_disconnected_work,
 		bt_dice_get_acceleration_values_callback,
 		bt_dice_get_cap_state_callback,
-		bt_dice_set_ignore_dock_connection_callback
+		bt_dice_set_ignore_dock_connection_callback,
+		bt_dice_set_animation_callback
 	);
 
 	dice_phy_init(&phy_dice);

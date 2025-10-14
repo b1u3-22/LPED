@@ -95,29 +95,30 @@ typedef struct bt_update_header {
 typedef struct bt_dice_dev {
     bt_status_t status;                                 // Current bluetooth status 
 
-    k_timeout_t visible_timeout_duration;               // Time before transitioning back to invisible state from visible state
-    k_timeout_t bonding_timeout_duration;               // Time before transitioning from bondable state back to invisible
-    k_timeout_t bonded_timeout_duration;                // Time before transitioning from bonded state back to invisible 
-   
-    struct k_timer bonding_timeout_timer;               // Timer used for connectable timeout
-    struct k_timer visible_timeout_timer;               // Timer used for visible timeout
-    struct k_timer bonded_timeout_timer;                // Timer used for connected timeout 
+    k_timeout_t visible_timeout_duration;                   // Time before transitioning back to invisible state from visible state
+    k_timeout_t bonding_timeout_duration;                   // Time before transitioning from bondable state back to invisible
+    k_timeout_t bonded_timeout_duration;                    // Time before transitioning from bonded state back to invisible 
+    
+    struct k_timer bonding_timeout_timer;                   // Timer used for connectable timeout
+    struct k_timer visible_timeout_timer;                   // Timer used for visible timeout
+    struct k_timer bonded_timeout_timer;                    // Timer used for connected timeout 
 
-    struct k_work *bonding_timeout_work;                // Work for connectable timeout callback
-    struct k_work *visible_timeout_work;                // Work for visible timeout callback
-    struct k_work *bonded_timeout_work;                 // Work for connected timeout callback
-    struct k_work *connected_work;                      // Work for connected callback
-    struct k_work *disconnected_work;                   // Work for disconnected callback
+    struct k_work *bonding_timeout_work;                    // Work for connectable timeout callback
+    struct k_work *visible_timeout_work;                    // Work for visible timeout callback
+    struct k_work *bonded_timeout_work;                     // Work for connected timeout callback
+    struct k_work *connected_work;                          // Work for connected callback
+    struct k_work *disconnected_work;                       // Work for disconnected callback
 
-    struct bt_conn *conn;                               // Bluetooth connection structure 
-    struct bt_conn_cb connection_callback;              // Bluetooth connection callback
-    struct bt_conn_auth_cb authentication_callback;     // Bluetooth authentication callback
+    struct bt_conn *conn;                                   // Bluetooth connection structure 
+    struct bt_conn_cb connection_callback;                  // Bluetooth connection callback
+    struct bt_conn_auth_cb authentication_callback;         // Bluetooth authentication callback
 
-    void (*get_acceleration_callback)(int16_t *buffer); // Callback for getting acceleration values
-    void (*get_cap_state_callback)(uint8_t *buffer);    // Callback for getting capacitor state value
-    void (*set_dock_ignore_callback)(bool ignore);      // Callback for changing the dock connection detection
+    void (*get_acceleration_callback)(int16_t *buffer);     // Callback for getting acceleration values
+    void (*get_cap_state_callback)(uint8_t *buffer);        // Callback for getting capacitor state value
+    void (*set_dock_ignore_callback)(bool ignore);          // Callback for changing the dock connection detection
+    void (*set_animation_callback)(animation_t *animation); // Callback for manually starting animations
 
-    struct bt_gatt_attr *dice_number_att;               // Dice number attribute
+    struct bt_gatt_attr *dice_number_att;                   // Dice number attribute
 } bt_dice_dev_t;
 
 /**
@@ -154,7 +155,8 @@ void dice_bt_init(
     struct k_work *disconnected_work,
     void (*get_acceleration_callback)(int16_t *buffer),
     void (*get_cap_state_callback)(uint8_t *buffer),
-    void (*set_dock_ignore_callback)(bool ignore)
+    void (*set_dock_ignore_callback)(bool ignore),
+    void (*set_animation_callback)(animation_t *animation)
 );
 
 /**

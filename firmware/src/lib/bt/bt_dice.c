@@ -69,6 +69,7 @@ static const struct bt_uuid_128 gatt_command_uuid =                 BT_UUID_INIT
 static const struct bt_uuid_128 gatt_comm_mode_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B8));
 static const struct bt_uuid_128 gatt_dice_number_uuid =             BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0B9));
 static const struct bt_uuid_128 gatt_selected_side_def_uuid =       BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C0));
+static const struct bt_uuid_128 gatt_animation_uuid =               BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xF9B126C7, 0xECEA, 0x4D1F, 0xA4E2, 0xECC3EB60E0C1));
 
 
 static uint8_t side_blink;
@@ -81,9 +82,8 @@ static uint8_t current_dice_def_id;
 static uint8_t new_dice_def_id;
 static int16_t acc_values[3];
 static uint8_t command_buf;
-
 static uint8_t dice_number[2];
-
+static animation_t animation;
 
 // Work for the function that runs periodically in the background 
 struct k_work dice_bt_state_work;
@@ -265,6 +265,18 @@ static ssize_t gatt_write_selected_side_def(struct bt_conn *conn, const struct b
 
     // get the requested side definition (dice def preloaded, just change the currently loaded side def)
     side_def = selected_dice_def.sides[*value];
+
+    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    return len;
+}
+
+static ssize_t gatt_write_animation(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, uint16_t len, uint16_t offset, uint8_t flags) 
+{   
+    if (len != sizeof(animation_t)) return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+
+    const animation_t *value = buf;
+
+    bt_dice_global->set_animation_callback(value);
 
     k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
     return len;
@@ -584,6 +596,18 @@ BT_GATT_SERVICE_DEFINE(
         BT_GATT_PERM_READ,
         gatt_read_cud, NULL, "Selected side definition"
     ),
+
+    BT_GATT_CHARACTERISTIC(
+        &gatt_animation_uuid.uuid,
+        BT_GATT_CHRC_WRITE,
+        BT_GATT_PERM_WRITE,
+        NULL, gatt_write_animation, &animation
+    ),
+    BT_GATT_DESCRIPTOR(
+        BT_UUID_GATT_CUD,
+        BT_GATT_PERM_READ,
+        gatt_read_cud, NULL, "Animations"
+    )
 );
 
 void connected(struct bt_conn *connection, uint8_t error) {
@@ -659,7 +683,8 @@ void dice_bt_init(
     struct k_work *disconnected_work,
     void (*get_acceleration_callback)(int16_t *buffer),
     void (*get_cap_state_callback)(uint8_t *buffer),
-    void (*set_dock_ignore_callback)(bool ignore)
+    void (*set_dock_ignore_callback)(bool ignore),
+    void (*set_animation_callback)(animation_t *animation)
 )
 {
     dice->authentication_callback.pairing_confirm = pairing_confirm;
@@ -687,6 +712,7 @@ void dice_bt_init(
     dice->get_acceleration_callback = get_acceleration_callback;
     dice->get_cap_state_callback = get_cap_state_callback;
     dice->set_dock_ignore_callback = set_dock_ignore_callback;
+    dice->set_animation_callback = set_animation_callback;
 
     dice->dice_number_att = bt_gatt_find_by_uuid(dice_svc.attrs, dice_svc.attr_count, &gatt_dice_number_uuid.uuid);
 
