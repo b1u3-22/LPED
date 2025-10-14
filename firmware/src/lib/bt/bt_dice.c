@@ -571,7 +571,7 @@ BT_GATT_SERVICE_DEFINE(
 
     BT_GATT_CHARACTERISTIC(
         &gatt_dice_number_uuid.uuid,
-        BT_GATT_CHRC_INDICATE | BT_GATT_CHRC_READ,
+        BT_GATT_CHRC_NOTIFY | BT_GATT_CHRC_READ,
         BT_GATT_PERM_READ,
         gatt_read_dice_number, NULL, &dice_number
     ),
@@ -713,8 +713,8 @@ void dice_bt_init(
     dice->get_cap_state_callback = get_cap_state_callback;
     dice->set_dock_ignore_callback = set_dock_ignore_callback;
     dice->set_animation_callback = set_animation_callback;
-
-    dice->dice_number_att = bt_gatt_find_by_uuid(dice_svc.attrs, dice_svc.attr_count, &gatt_dice_number_uuid.uuid);
+    
+    dice->dice_number_att = bt_gatt_find_by_uuid(NULL, 0, &gatt_dice_number_uuid.uuid);
 
     bt_dice_global = dice;
 
@@ -818,20 +818,16 @@ void dice_bt_set_bondable(bt_dice_dev_t *dice)
 void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t status)
 {
     if (!dice->conn || dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
+    k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
 
     dice_number[0] = status;
     dice_number[1] = number != NULL ? *number : 0x00;
 
-    struct bt_gatt_indicate_params params = {
-        .attr = dice->dice_number_att, 
-        .data = dice_number, 
-        .len  = sizeof(dice_number),
-        .func = NULL
-    };
-
-    bt_gatt_indicate(dice->conn, &params);
+    bt_gatt_notify(dice->conn, dice->dice_number_att, &dice_number, sizeof(dice_number));
 }
 
 void dice_bt_set_cap_state(bt_dice_dev_t *dice, uint8_t *state) {
+    k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
+
     bt_bas_set_battery_level(*state);
 }
