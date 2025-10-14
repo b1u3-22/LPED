@@ -178,6 +178,14 @@ static ssize_t gatt_read_selected_side_def(struct bt_conn *conn, const struct bt
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(side_definition_t));
 }
 
+static ssize_t gatt_read_dice_number(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
+{
+    const char *value = attr->user_data;
+    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(dice_number));
+}
+
 // ============ GATT WRITE CALLBACKS ============
 
 static ssize_t gatt_write_side_blink(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf, uint16_t len, uint16_t offset, uint8_t flags) 
@@ -551,13 +559,18 @@ BT_GATT_SERVICE_DEFINE(
 
     BT_GATT_CHARACTERISTIC(
         &gatt_dice_number_uuid.uuid,
-        BT_GATT_CHRC_INDICATE,
-        BT_GATT_PERM_NONE,
-        NULL, NULL, &dice_number
+        BT_GATT_CHRC_INDICATE | BT_GATT_CHRC_READ,
+        BT_GATT_PERM_READ,
+        gatt_read_dice_number, NULL, &dice_number
     ),
     BT_GATT_CCC(
         NULL, 
         BT_GATT_PERM_READ | BT_GATT_PERM_WRITE
+    ),
+    BT_GATT_DESCRIPTOR(
+        BT_UUID_GATT_CUD,
+        BT_GATT_PERM_READ,
+        gatt_read_cud, NULL, "Dice number"
     ),
 
     BT_GATT_CHARACTERISTIC(
