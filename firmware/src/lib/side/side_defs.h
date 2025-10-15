@@ -17,7 +17,7 @@
 #define VEC_Z       2       /** Position of the z axis vector component in side_def vector array */
 
 #define DICE_DEF_NAME_MAX_LEN 21
-#define DICE_DEF_SIDES_MAX 60
+#define DICE_DEF_SIDES_MAX 20
 
 #define NUMBER_OF_PREDEFINED_DICE sizeof(supported_dice) / sizeof(dice_definition_t *)
 #define EMPTY_SIDE_DEF(side_def) (memset(side_def, 0, sizeof(side_definition_t)))
@@ -69,12 +69,12 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 1,
             .animation = {
-                .fade_type = fade_type_slow,
+                .fade_type = fade_type_fast,
                 .number_of_steps = 1, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
@@ -83,20 +83,20 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 2,
             .animation = {
-                .fade_type = fade_type_slow,
+                .fade_type = fade_type_fast,
                 .number_of_steps = 3, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
@@ -105,28 +105,28 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 3,
             .animation = {
-                .fade_type = fade_type_slow,
+                .fade_type = fade_type_fast,
                 .number_of_steps = 5, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_GREEN_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
@@ -135,36 +135,36 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 4,
             .animation = {
-                .fade_type = fade_type_slow,
+                .fade_type = fade_type_fast,
                 .number_of_steps = 7, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_GREEN_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
@@ -173,44 +173,44 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 5,
             .animation = {
-                .fade_type = fade_type_slow,
+                .fade_type = fade_type_fast,
                 .number_of_steps = 9, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_GREEN_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
@@ -219,52 +219,52 @@ static const dice_definition_t dice_6_side = {
         {
             .number = 6,
             .animation = {
-                .fade_type = fade_type_slow,
-                .number_of_steps = 7, 
+                .fade_type = fade_type_fast,
+                .number_of_steps = 11, 
                 .steps = {
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_BLUE_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_GREEN_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_RED_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_OFF_INDEX,
-                        .duration = 2
+                        .duration = 1
                     },
                     {
                         .color_index = COLOR_GREEN_INDEX,
-                        .duration = 2
+                        .duration = 1
                     }
                 }
             },
