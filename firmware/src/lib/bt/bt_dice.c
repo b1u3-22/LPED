@@ -638,7 +638,8 @@ void disconnected(struct bt_conn *connection, uint8_t error) {
         bt_dice_global->status = bt_status_connectable;
     }
 
-    k_work_submit(bt_dice_global->disconnected_work);
+    // only fire the disconnected work if the disconnection wasn't caused by the connected timer expiring
+    if (k_timer_remaining_get(&bt_dice_global->bonded_timeout_timer) != 0) k_work_submit(bt_dice_global->disconnected_work);
 
     // stop periodic reading of capacitor and accelerometer
     k_timer_stop(&dice_bt_state_timer);
