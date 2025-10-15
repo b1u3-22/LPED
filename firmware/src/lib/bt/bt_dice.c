@@ -424,7 +424,7 @@ static ssize_t gatt_write_command(struct bt_conn *conn, const struct bt_gatt_att
     switch (*value)
     {
         case bt_command_restart:
-            //sys_reboot(SYS_REBOOT_COLD);
+            sys_reboot(SYS_REBOOT_COLD);
             break;
 
         case bt_command_clear_memory:
@@ -685,7 +685,7 @@ void dice_bt_init(
     void (*get_acceleration_callback)(int16_t *buffer),
     void (*get_cap_state_callback)(uint8_t *buffer),
     void (*set_dock_ignore_callback)(bool ignore),
-    void (*set_animation_callback)(animation_t *animation)
+    void (*set_animation_callback)(const animation_t *animation)
 )
 {
     dice->authentication_callback.pairing_confirm = pairing_confirm;

@@ -17,6 +17,7 @@
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/services/bas.h>
+#include <zephyr/sys/reboot.h>
 
 #include <libfxls89xx.h>
 
@@ -116,7 +117,7 @@ typedef struct bt_dice_dev {
     void (*get_acceleration_callback)(int16_t *buffer);     // Callback for getting acceleration values
     void (*get_cap_state_callback)(uint8_t *buffer);        // Callback for getting capacitor state value
     void (*set_dock_ignore_callback)(bool ignore);          // Callback for changing the dock connection detection
-    void (*set_animation_callback)(animation_t *animation); // Callback for manually starting animations
+    void (*set_animation_callback)(const animation_t *animation); // Callback for manually starting animations
 
     struct bt_gatt_attr *dice_number_att;                   // Dice number attribute
 } bt_dice_dev_t;
@@ -156,7 +157,7 @@ void dice_bt_init(
     void (*get_acceleration_callback)(int16_t *buffer),
     void (*get_cap_state_callback)(uint8_t *buffer),
     void (*set_dock_ignore_callback)(bool ignore),
-    void (*set_animation_callback)(animation_t *animation)
+    void (*set_animation_callback)(const animation_t *animation)
 );
 
 /**
