@@ -265,11 +265,11 @@ void storage_get_comm_mode(uint8_t *comm_mode)
     if (nvs_read(&file_system, COMM_MODE_ID, comm_mode, sizeof(uint8_t)) > 0) return;
     else {
         *comm_mode = ERROR_BLINK_DEFAULT_VAL;
-        nvs_write(&file_system, ERROR_BLINK_ID, comm_mode, sizeof(uint8_t));
+        nvs_write(&file_system, COMM_MODE_ID, comm_mode, sizeof(uint8_t));
     }
 }
 
 void storage_set_comm_mode(const uint8_t *comm_mode)
 {
-    nvs_write(&file_system, ERROR_BLINK_ID, comm_mode, sizeof(uint8_t));
+    nvs_write(&file_system, COMM_MODE_ID, comm_mode, sizeof(uint8_t));
 }
