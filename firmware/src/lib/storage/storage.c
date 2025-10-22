@@ -27,7 +27,7 @@ uint8_t storage_init()
     }
 
     file_system.sector_size = info.size;
-    file_system.sector_count = 3U;
+    file_system.sector_count = 8U;
 
     if (nvs_mount(&file_system)) {
         printk("Failed to mount file system\n");
