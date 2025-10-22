@@ -163,4 +163,10 @@ config LPED_BOOT_ANIMATION
     help
         If enabled, a boot animation will be played when the dice finishes booting
 
+config LPED_RGB_LED_COMMON_ANODE
+    bool "Defines if the RGB LED has common anode (y) or cathode (n)"
+    default y
+    help 
+        Defines if the RGB LED has common anode (y) or cathode (n)
+
 endmenu
