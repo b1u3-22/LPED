@@ -15,9 +15,16 @@
 K_THREAD_STACK_DEFINE(led_effects_thread_stack, CONFIG_LPED_LED_EFFECTS_STACK_SIZE);
 
 void set_led_color_param(phy_dice_dev_t *dice_dev, const uint8_t *red, const uint8_t *green, const uint8_t *blue) {
+#ifdef CONFIG_LPED_RGB_LED_COMMON_ANODE
+    pwm_set_pulse_dt(&dice_dev->led_r, dice_dev->led_r.period - (*red * dice_dev->led_r.period / __UINT8_MAX__));
+    pwm_set_pulse_dt(&dice_dev->led_g, dice_dev->led_g.period - (*green * dice_dev->led_g.period / __UINT8_MAX__));
+    pwm_set_pulse_dt(&dice_dev->led_b, dice_dev->led_b.period - (*blue * dice_dev->led_b.period / __UINT8_MAX__));
+#else
     pwm_set_pulse_dt(&dice_dev->led_r, *red * dice_dev->led_r.period / __UINT8_MAX__);
     pwm_set_pulse_dt(&dice_dev->led_g, *green * dice_dev->led_g.period / __UINT8_MAX__);
     pwm_set_pulse_dt(&dice_dev->led_b, *blue * dice_dev->led_b.period / __UINT8_MAX__);
+#endif
+
 }
 
 void set_led_color_index(phy_dice_dev_t *dice_dev, uint8_t color_index) {
