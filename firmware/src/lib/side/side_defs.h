@@ -100,7 +100,7 @@ static const dice_definition_t dice_6_side = {
                     }
                 }
             },
-            .vector = {0, 0, ACC_1G}
+            .vector = {ACC_1G, 0, 0}
         },
         {
             .number = 3,
@@ -130,7 +130,7 @@ static const dice_definition_t dice_6_side = {
                     }
                 }
             },
-            .vector = {ACC_1G, 0, 0}
+            .vector = {0, 0, -ACC_1G}
         },
         {
             .number = 4,
@@ -168,7 +168,7 @@ static const dice_definition_t dice_6_side = {
                     }
                 }
             },
-            .vector = {-ACC_1G, 0, 0}
+            .vector = {0, 0, ACC_1G}
         },
         {
             .number = 5,
@@ -214,7 +214,7 @@ static const dice_definition_t dice_6_side = {
                     }
                 }
             },
-            .vector = {0, 0, -ACC_1G}
+            .vector = {-ACC_1G, 0, 0}
         },
         {
             .number = 6,
