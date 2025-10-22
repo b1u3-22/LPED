@@ -1,0 +1,43 @@
+mcuboot:
+  address: 0x00000000
+  region: flash_primary
+  size: 0xC000 # 48KB
+
+mcuboot_primary:
+  address: 0x0000C000
+  region: flash_primary
+  size: 0x37000 # 220kB
+  span: [mcuboot_pad, app]
+
+mcuboot_pad:
+  address: 0x0000C000
+  region: flash_primary
+  size: 0x200 # 512B pad
+
+mcuboot_primary_app:
+  orig_span: &id002
+  - app
+  span: *id002
+  address: 0x0000C200
+  region: flash_primary
+  size: 0x36E00 # 219.5kB
+
+app:
+  address: 0x0000C200
+  region: flash_primary
+  size: 0x36E00 # 220KB app
+
+mcuboot_secondary:
+  address: 0x00043000
+  region: flash_primary
+  size: 0x37000
+
+nvs_storage:
+  address: 0x0007A000
+  region: flash_primary
+  size: 0x6000 # 24kB
+
+sram_primary: 
+  address: 0x20000000
+  region: sram_primary
+  size: 0x20000 # 128kB
