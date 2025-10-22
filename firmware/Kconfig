@@ -58,15 +58,6 @@ config LPED_ACC_DEBOUNCE_TIME
        Debounce time for accelerometer interrupts to avoid reacting 
        to signal coming from the accelerometer changes that are too fast
        and should be ignored
-        
-config LPED_VISIBILITY_TIMEOUT
-    int "Defines for how many seconds should the die be visible"
-    default 60
-    help
-        Defines for how many seconds should the die be visible after
-        connecting to dock. After this timeout is reached, it will 
-        transition into invisible mode and it is necessary to unplug
-        and plug it into the dock again to reset this timer
 
 config LPED_CONNECTABLE_TIMEOUT
     int "Defines for how many seconds should the die be connectable"
