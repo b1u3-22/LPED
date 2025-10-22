@@ -56,8 +56,8 @@ struct k_work acc_int2_work;
 struct k_work dock_btn_work;
 struct k_work dock_con_work;
 struct k_work dice_visible_timeout_work;
-struct k_work dice_bonding_timeout_work;
-struct k_work dice_bonded_timeout_work;
+struct k_work dice_connectable_timeout_work;
+struct k_work dice_connected_timeout_work;
 struct k_work dice_connected_work;
 struct k_work dice_disconnected_work;
 
@@ -113,7 +113,7 @@ void acc_int1_callback(struct k_work *work) {
 			dice_get_cap_state(&phy_dice, &cap_state);
 
 #ifdef CONFIG_LPED_CAP_STATE_INTERVAL
-			if (++cap_state_interval_counter >= CONFIG_LPED_CAP_STATE_INTERVAL) {
+			if (++cap_state_interval_counter >=x CONFIG_LPED_CAP_STATE_INTERVAL) {
 				cap_state_interval_counter = 0;
 				dice_get_cap_state(&phy_dice, &cap_state);
 
@@ -140,6 +140,7 @@ void acc_int1_callback(struct k_work *work) {
 		}
 
 		else {
+			cap_state_interval_counter = 0;
 			if (comm_mode) 	dice_bt_set_dice_number(&bt_dice, NULL, bt_message_rolling);
 			else 			dice_bt_broadcast(NULL, bt_message_rolling);
 		}
@@ -151,7 +152,7 @@ void acc_int2_callback(struct k_work *work) {
 #endif
 
 void dock_con_callback(struct k_work *work) {
-	if (ignore_dock_disconnect && bt_dice.status == bt_status_connectable) return;
+	if (ignore_dock_disconnect) return;
 	k_msleep(10);
 	storage_get_comm_mode(&comm_mode);
 
@@ -162,9 +163,8 @@ void dock_con_callback(struct k_work *work) {
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_standby);
 #endif
 
-		dice_bt_set_bondable(&bt_dice);
-		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
-
+		if (bt_dice.status != bt_status_connected) dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+		dice_bt_set_connectable(&bt_dice);
 	}
 
 	// Falling edge
@@ -176,8 +176,8 @@ void dock_con_callback(struct k_work *work) {
 		}
 
 		else {
-			dice_bt_set_bondable(&bt_dice);
-			dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+			if (bt_dice.status != bt_status_connected) dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
+			dice_bt_set_connectable(&bt_dice);
 		}
 
 #ifndef CONFIG_LPED_DEBUG_DISABLE_ACC
@@ -209,7 +209,7 @@ void bt_dice_set_ignore_dock_connection_callback(bool ignore) {
 	if (!ignore_dock_disconnect) k_work_submit(&dock_con_work);
 }
 
-void bt_dice_set_animation_callback(animation_t *animation) {
+void bt_dice_set_animation_callback(const animation_t *animation) {
 	dice_led_start_animation(&phy_dice, animation);
 }
 
@@ -242,13 +242,7 @@ void dock_con_isr(const struct device *dev, struct gpio_callback *callback_gpio,
 	dock_con_debounce = k_uptime_get_32();
 }
 
-// Workers for handling bluetooth interaction - Pairing button long press, visibility timedout and bonding timedout
-void dice_visible_timeout_callback(struct k_work *work) 
-{
-	dice_bt_set_invisible(&bt_dice);
-	dice_led_off(&phy_dice);
-}
-
+// Workers for handling bluetooth interaction - Pairing button long press, visibility timedout and connectable timedout
 void dice_connectable_timeout_callback(struct k_work *work) 
 {
 	dice_bt_set_invisible(&bt_dice);
@@ -274,15 +268,9 @@ void dice_disconnected_callback(struct k_work *work)
 	// restart of the die
 	ignore_dock_disconnect = false;
 
-	if (bt_dice.status == bt_status_invisible) {
-		dice_bt_set_invisible(&bt_dice);
-		dice_led_off(&phy_dice);
-	}
 
-	else {
-		dice_bt_set_bondable(&bt_dice);
-		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
-	}
+	dice_bt_set_connectable(&bt_dice);
+	dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 }
 
 int main(void)
@@ -295,12 +283,10 @@ int main(void)
 
 	dice_bt_init(
 		&bt_dice, 
-		K_SECONDS(CONFIG_LPED_VISIBILITY_TIMEOUT), 
-		K_SECONDS(CONFIG_LPED_CONNECTABLE_TIMEOUT), 
-		K_SECONDS(CONFIG_LPED_CONNECTED_TIMEOUT), 
-		&dice_bonding_timeout_work, 
-		&dice_visible_timeout_work, 
-		&dice_bonded_timeout_work, 
+		K_SECONDS(CONFIG_LPED_CONNECTABLE_TIMEOUT),
+		K_SECONDS(CONFIG_LPED_CONNECTED_TIMEOUT),
+		&dice_connectable_timeout_work,
+		&dice_connected_timeout_work,  
 		&dice_connected_work, 
 		&dice_disconnected_work,
 		bt_dice_get_acceleration_values_callback,
@@ -318,9 +304,8 @@ int main(void)
 	k_work_init(&acc_int2_work, acc_int2_callback);
 #endif
 	k_work_init(&dock_con_work, dock_con_callback);
-	k_work_init(&dice_bonding_timeout_work, dice_connectable_timeout_callback);
-	k_work_init(&dice_visible_timeout_work, dice_visible_timeout_callback);
-	k_work_init(&dice_bonded_timeout_work, dice_connected_timeout_callback);
+	k_work_init(&dice_connectable_timeout_work, dice_connectable_timeout_callback);
+	k_work_init(&dice_connected_timeout_work, dice_connected_timeout_callback);
 	k_work_init(&dice_connected_work, dice_connected_callback);
 	k_work_init(&dice_disconnected_work, dice_disconnected_callback);
 
@@ -344,7 +329,7 @@ int main(void)
 #ifndef CONFIG_LPED_DEBUG_DISABLE_ACC
 		fxls89xx_set_mode(acc, fxls89xx_sys_mode_standby);
 #endif
-		dice_bt_set_bondable(&bt_dice);
+		dice_bt_set_connectable(&bt_dice);
 		dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 	}
 
@@ -355,7 +340,7 @@ int main(void)
 #endif
 			storage_get_comm_mode(&comm_mode);
 			if (comm_mode) {
-				dice_bt_set_bondable(&bt_dice);
+				dice_bt_set_connectable(&bt_dice);
 				dice_led_on_color(&phy_dice, &COLOR_BLUE_BRIGHT);
 			}
 		}

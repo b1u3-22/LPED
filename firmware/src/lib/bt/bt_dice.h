@@ -52,7 +52,6 @@ typedef enum {
  */
 typedef enum {
     bt_status_invisible,    // Dice is invisible, BT turned off
-    bt_status_visible,      // Dice is visible, non-connectable
     bt_status_connectable,  // Dice is visible and connectable
     bt_status_connected     // Dice is visible and connected
 } bt_status_t;
@@ -96,23 +95,20 @@ typedef struct bt_update_header {
 typedef struct bt_dice_dev {
     bt_status_t status;                                 // Current bluetooth status 
 
-    k_timeout_t visible_timeout_duration;                   // Time before transitioning back to invisible state from visible state
-    k_timeout_t bonding_timeout_duration;                   // Time before transitioning from bondable state back to invisible
-    k_timeout_t bonded_timeout_duration;                    // Time before transitioning from bonded state back to invisible 
+    k_timeout_t connectable_timeout_duration;                   // Time before transitioning from bondable state back to invisible
+    k_timeout_t connected_timeout_duration;                    // Time before transitioning from connected state back to invisible 
     
-    struct k_timer bonding_timeout_timer;                   // Timer used for connectable timeout
+    struct k_timer connectable_timeout_timer;                   // Timer used for connectable timeout
     struct k_timer visible_timeout_timer;                   // Timer used for visible timeout
-    struct k_timer bonded_timeout_timer;                    // Timer used for connected timeout 
+    struct k_timer connected_timeout_timer;                    // Timer used for connected timeout 
 
-    struct k_work *bonding_timeout_work;                    // Work for connectable timeout callback
-    struct k_work *visible_timeout_work;                    // Work for visible timeout callback
-    struct k_work *bonded_timeout_work;                     // Work for connected timeout callback
+    struct k_work *connectable_timeout_work;                    // Work for connectable timeout callback
+    struct k_work *connected_timeout_work;                     // Work for connected timeout callback
     struct k_work *connected_work;                          // Work for connected callback
     struct k_work *disconnected_work;                       // Work for disconnected callback
 
     struct bt_conn *conn;                                   // Bluetooth connection structure 
     struct bt_conn_cb connection_callback;                  // Bluetooth connection callback
-    struct bt_conn_auth_cb authentication_callback;         // Bluetooth authentication callback
 
     void (*get_acceleration_callback)(int16_t *buffer);     // Callback for getting acceleration values
     void (*get_cap_state_callback)(uint8_t *buffer);        // Callback for getting capacitor state value
@@ -132,12 +128,10 @@ void dice_bt_broadcast(const uint8_t *message, const bt_message_t message_type);
 /**
  * @brief Initialize the bluetooth dice structure
  * @param dice                          Dice to initialize
- * @param visible_timeout               Time before visible timeout
- * @param bonding_timeout               Time before connectable timeout
- * @param bonded_timeout                Time before connected timeout
- * @param bonding_timeout_work          Work where to submit on connectable timeout
- * @param visible_timeout_work          Work where to submit on visible timeout
- * @param bonded_timeout_work           Work where to submit on connected timeout
+ * @param connectable_timeout               Time before connectable timeout
+ * @param connected_timeout                Time before connected timeout
+ * @param connectable_timeout_work          Work where to submit on connectable timeout
+ * @param connected_timeout_work           Work where to submit on connected timeout
  * @param connected_work                Work where to submit when connected
  * @param disconnected_work             Work where to submit when disconnected
  * @param get_acceleration_callback     Callback for getting acceleration values
@@ -146,12 +140,10 @@ void dice_bt_broadcast(const uint8_t *message, const bt_message_t message_type);
  */
 void dice_bt_init(
     bt_dice_dev_t *dice, 
-    k_timeout_t visible_timeout, 
-    k_timeout_t bonding_timeout, 
-    k_timeout_t bonded_timeout, 
-    struct k_work *bonding_timeout_work,
-    struct k_work *visible_timeout_work,
-    struct k_work *bonded_timeout_work,
+    k_timeout_t connectable_timeout, 
+    k_timeout_t connected_timeout, 
+    struct k_work *connectable_timeout_work,
+    struct k_work *connected_timeout_work,
     struct k_work *connected_work,
     struct k_work *disconnected_work,
     void (*get_acceleration_callback)(int16_t *buffer),
@@ -170,24 +162,13 @@ void dice_bt_set_invisible(bt_dice_dev_t *dice);
 
 /**
  * @brief   Change the dice bluetooth state to visible,
- *          disconnecting from any connected devices and 
- *          turning the Bluetooth module ON and
- *          This will also reset the visible timeout timer
- *          if already visible
- *          starting non-connectable advertising
- * @param dice Dice
- */
-void dice_bt_set_visible(bt_dice_dev_t *dice);
-
-/**
- * @brief   Change the dice bluetooth state to visible,
  *          turning the Bluetooth module ON and
  *          starting connectable advertising.
  *          If already connectable, this will reset the 
  *          connectable timeout timer
  * @param dice Dice
  */
-void dice_bt_set_bondable(bt_dice_dev_t *dice);
+void dice_bt_set_connectable(bt_dice_dev_t *dice);
 
 void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t status);
 void dice_bt_set_cap_state(bt_dice_dev_t *dice, uint8_t *state);

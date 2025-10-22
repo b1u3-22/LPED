@@ -128,28 +128,28 @@ void dice_bt_load_data()
 static ssize_t gatt_read(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 	return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t));
 }
 
 static ssize_t gatt_read_supported_dice_defs_ids(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 	return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t) * MAX_DICE_DEFS);
 }
 
 static ssize_t gatt_read_selected_dice_def(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 	return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(dice_definition_header_t));
 }
 
 static ssize_t gatt_read_dice_update(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(new_dice_def_id));
 }
 
@@ -158,14 +158,14 @@ static ssize_t gatt_read_accelerometer(struct bt_conn *conn, const struct bt_gat
     bt_dice_global->get_acceleration_callback(acc_values);
     const char *value = attr->user_data;
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(acc_values));
 }
 
 static ssize_t gatt_read_comm_mode(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(uint8_t));
 }
@@ -173,7 +173,7 @@ static ssize_t gatt_read_comm_mode(struct bt_conn *conn, const struct bt_gatt_at
 static ssize_t gatt_read_selected_side_def(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(side_definition_t));
 }
@@ -181,7 +181,7 @@ static ssize_t gatt_read_selected_side_def(struct bt_conn *conn, const struct bt
 static ssize_t gatt_read_dice_number(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, uint16_t len, uint16_t offset) 
 {
     const char *value = attr->user_data;
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(dice_number));
 }
@@ -198,7 +198,7 @@ static ssize_t gatt_write_side_blink(struct bt_conn *conn, const struct bt_gatt_
     storage_set_side_blink(value);
     side_blink = *value >= 1;
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -212,7 +212,7 @@ static ssize_t gatt_write_error_blink(struct bt_conn *conn, const struct bt_gatt
     storage_set_error_blink(value);
     error_blink = *value >= 1;
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -226,7 +226,7 @@ static ssize_t gatt_write_comm_mode(struct bt_conn *conn, const struct bt_gatt_a
     storage_set_comm_mode(value);
     comm_mode = *value >= 1;
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -239,7 +239,7 @@ static ssize_t gatt_write_current_dice_def_id(struct bt_conn *conn, const struct
     // Update the id for currently used dice definition
     current_dice_def_id = *value;
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -253,7 +253,7 @@ static ssize_t gatt_write_selected_dice_def(struct bt_conn *conn, const struct b
     // check if it exists
     if (selected_dice_def.header.id == EMPTY_ID) return BT_GATT_ERR(BT_ATT_ERR_ATTRIBUTE_NOT_FOUND);
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -266,7 +266,7 @@ static ssize_t gatt_write_selected_side_def(struct bt_conn *conn, const struct b
     // get the requested side definition (dice def preloaded, just change the currently loaded side def)
     side_def = selected_dice_def.sides[*value];
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -278,7 +278,7 @@ static ssize_t gatt_write_animation(struct bt_conn *conn, const struct bt_gatt_a
 
     bt_dice_global->set_animation_callback(value);
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -413,7 +413,7 @@ static ssize_t gatt_write_dice_update(struct bt_conn *conn, const struct bt_gatt
             return BT_GATT_ERR(BT_ATT_ERR_ATTRIBUTE_NOT_FOUND);
     }
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -445,7 +445,7 @@ static ssize_t gatt_write_command(struct bt_conn *conn, const struct bt_gatt_att
             return BT_GATT_ERR(BT_ATT_ERR_ATTRIBUTE_NOT_FOUND);
     }
 
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
     return len;
 }
 
@@ -620,12 +620,8 @@ void connected(struct bt_conn *connection, uint8_t error) {
     bt_dice_global->status = bt_status_connected;
     printk("Connected\n");
 
-    k_timer_stop(&bt_dice_global->bonding_timeout_timer);
-    k_timer_stop(&bt_dice_global->visible_timeout_timer);
-    k_timer_start(&bt_dice_global->bonded_timeout_timer, bt_dice_global->bonded_timeout_duration, K_NO_WAIT);
-
-    // Start periodic functions to get capacitor and accelerometer state
-    k_timer_start(&dice_bt_state_timer, K_MSEC(CONFIG_LPED_BT_STATE_INTERVAL), K_MSEC(CONFIG_LPED_BT_STATE_INTERVAL));
+    k_timer_stop(&bt_dice_global->connectable_timeout_timer);
+    k_timer_start(&bt_dice_global->connected_timeout_timer, bt_dice_global->connected_timeout_duration, K_NO_WAIT);
 
     k_work_submit(bt_dice_global->connected_work);
 }
@@ -635,51 +631,28 @@ void disconnected(struct bt_conn *connection, uint8_t error) {
     if (bt_dice_global->conn) {
         bt_conn_unref(bt_dice_global->conn);
         bt_dice_global->conn = NULL;
-        bt_dice_global->status = bt_status_connectable;
+        bt_dice_global->status = bt_status_invisible;
     }
 
-    // only fire the disconnected work if the disconnection wasn't caused by the connected timer expiring
-    if (k_timer_remaining_get(&bt_dice_global->bonded_timeout_timer) != 0) k_work_submit(bt_dice_global->disconnected_work);
-
-    // stop periodic reading of capacitor and accelerometer
-    k_timer_stop(&dice_bt_state_timer);
+    k_work_submit(bt_dice_global->disconnected_work);
 }
 
-void pairing_confirm(struct bt_conn *connection) {
-    printk("Received bonding request\n");
-    if (bt_dice_global->status != bt_status_connectable) {
-        bt_conn_auth_cancel(connection);
-        printk("Not in bonding mode, bonding rejected\n");
-        return;
-    }
-
-    bt_conn_auth_pairing_confirm(connection);
-    printk("Confirmed request\n");
+void connectable_expired(struct k_timer *timer_id) {
+    bt_dice_dev_t *dice = CONTAINER_OF(timer_id, bt_dice_dev_t, connectable_timeout_timer);
+    k_work_submit(dice->connectable_timeout_work);
 }
 
-void visibility_expired(struct k_timer *timer_id) {
-    bt_dice_dev_t *dice = CONTAINER_OF(timer_id, bt_dice_dev_t, visible_timeout_timer);
-    k_work_submit(dice->visible_timeout_work);
-}
-
-void bonding_expired(struct k_timer *timer_id) {
-    bt_dice_dev_t *dice = CONTAINER_OF(timer_id, bt_dice_dev_t, bonding_timeout_timer);
-    k_work_submit(dice->bonding_timeout_work);
-}
-
-void bonded_expired(struct k_timer *timer_id) {
-    bt_dice_dev_t *dice = CONTAINER_OF(timer_id, bt_dice_dev_t, bonded_timeout_timer);
-    k_work_submit(dice->bonded_timeout_work);
+void connected_expired(struct k_timer *timer_id) {
+    bt_dice_dev_t *dice = CONTAINER_OF(timer_id, bt_dice_dev_t, connected_timeout_timer);
+    k_work_submit(dice->connected_timeout_work);
 }
 
 void dice_bt_init(
     bt_dice_dev_t *dice, 
-    k_timeout_t visible_timeout, 
-    k_timeout_t bonding_timeout, 
-    k_timeout_t bonded_timeout, 
-    struct k_work *bonding_timeout_work,
-    struct k_work *visible_timeout_work,
-    struct k_work *bonded_timeout_work,
+    k_timeout_t connectable_timeout, 
+    k_timeout_t connected_timeout, 
+    struct k_work *connectable_timeout_work,
+    struct k_work *connected_timeout_work,
     struct k_work *connected_work,
     struct k_work *disconnected_work,
     void (*get_acceleration_callback)(int16_t *buffer),
@@ -688,25 +661,20 @@ void dice_bt_init(
     void (*set_animation_callback)(const animation_t *animation)
 )
 {
-    dice->authentication_callback.pairing_confirm = pairing_confirm;
     dice->connection_callback.connected = connected;
     dice->connection_callback.disconnected = disconnected;
 
     bt_conn_cb_register(&dice->connection_callback);
-    bt_conn_auth_cb_register(&dice->authentication_callback);
 
-    dice->visible_timeout_duration = visible_timeout;
-    dice->bonding_timeout_duration = bonding_timeout;
-    dice->bonded_timeout_duration = bonded_timeout;
-    k_timer_init(&dice->visible_timeout_timer, visibility_expired, NULL);
-    k_timer_init(&dice->bonding_timeout_timer, bonding_expired, NULL);
-    k_timer_init(&dice->bonded_timeout_timer, bonded_expired, NULL);
+    dice->connectable_timeout_duration = connectable_timeout;
+    dice->connected_timeout_duration = connected_timeout;
+    k_timer_init(&dice->connectable_timeout_timer, connectable_expired, NULL);
+    k_timer_init(&dice->connected_timeout_timer, connected_expired, NULL);
     
     dice->status = bt_status_invisible;
     
-    dice->bonding_timeout_work = bonding_timeout_work;
-    dice->visible_timeout_work = visible_timeout_work;
-    dice->bonded_timeout_work = bonded_timeout_work;
+    dice->connectable_timeout_work = connectable_timeout_work;
+    dice->connected_timeout_work = connected_timeout_work;
     dice->connected_work = connected_work;
     dice->disconnected_work = disconnected_work;
 
@@ -735,91 +703,49 @@ void dice_bt_set_invisible(bt_dice_dev_t *dice)
     }
 
     dice->status = bt_status_invisible;         // Change status of the die
-    k_timer_stop(&dice->bonding_timeout_timer); // Stop timers 
-    k_timer_stop(&dice->visible_timeout_timer);
+    k_timer_stop(&dice->connectable_timeout_timer); // Stop timers 
+    k_timer_stop(&dice->connected_timeout_timer); // Stop timers 
 
     if (bt_disable()) printk("Failed to turn bluetooth off");
 }
 
-void dice_bt_set_visible(bt_dice_dev_t *dice)
+void dice_bt_set_connectable(bt_dice_dev_t *dice)
 {
-    if (dice->status == bt_status_invisible) {
-        if (bt_enable(NULL)) {
-            printk("Failed to turn bluetooth on\n");
-            return;
-        }
-    }
 
-    if (dice->status == bt_status_connectable || dice->status == bt_status_connected) {
-        if (bt_le_adv_stop()) {
-            printk("Failed to stop connectable advertising\n");
-            return;
-        }
-    }
-
-
-    // If dice is already visible, just reset the timeout timer
-    if (dice->status == bt_status_visible) {
-        k_timer_start(&dice->visible_timeout_timer, dice->visible_timeout_duration, K_NO_WAIT);
-        return;
-    }
-
-    static const struct bt_data data[] = {
-        BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, strlen(CONFIG_BT_DEVICE_NAME)),
-    };
-    if (bt_le_adv_start(BT_LE_ADV_NCONN_IDENTITY, data, ARRAY_SIZE(data), NULL, 0)) {
-        printk("Failed to start advertising name\n");
-        return;
-    }
-
-    dice->status = bt_status_visible;
-    k_timer_stop(&dice->bonding_timeout_timer);
-    k_timer_start(&dice->visible_timeout_timer, dice->visible_timeout_duration, K_NO_WAIT);
-}
-
-void dice_bt_set_bondable(bt_dice_dev_t *dice)
-{
-    // if device is already bondable, only reset the timer
     if (dice->status == bt_status_connectable) {
-        k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
+        k_timer_start(&dice->connectable_timeout_timer, dice->connectable_timeout_duration, K_NO_WAIT);
         return;
     }
 
-    // same thing when dice is already connected, this will extend both bonding and bonded timers
     if (dice->status == bt_status_connected) {
-        k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
-        k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
-    }
-
-    if (bt_le_adv_stop()) {
-        printk("Failed to stop advertising\n");
-        return;
-    }
-
-    if (dice->status == bt_status_invisible) {
-        if (bt_enable(NULL)) {
-            printk("Failed to enable Bluetooth\n");
-            return;
-        }
-    }
-
-    static const struct bt_data data[] = {
-        BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, strlen(CONFIG_BT_DEVICE_NAME)),
-    };
-    if (bt_le_adv_start(BT_LE_ADV_CONN, data, ARRAY_SIZE(data), NULL, 0)) {
-        printk("Failed to start connectable advertising\n");
+        k_timer_start(&dice->connected_timeout_timer, dice->connected_timeout_duration, K_NO_WAIT);
         return;
     }
 
     dice->status = bt_status_connectable;
-    k_timer_start(&dice->bonding_timeout_timer, dice->bonding_timeout_duration, K_NO_WAIT);
-    k_timer_stop(&dice->visible_timeout_timer);
+    k_timer_stop(&dice->connected_timeout_timer);
+    k_timer_start(&dice->connectable_timeout_timer, dice->connectable_timeout_duration, K_NO_WAIT);
+
+    int err = bt_enable(NULL);
+    if (err != -EALREADY && err != 0) {
+        printk("Failed to start Bluetooth\n");
+        return;
+    }
+
+    static const struct bt_data data[] = {
+        BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, strlen(CONFIG_BT_DEVICE_NAME)),
+    };
+
+    if (bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, data, ARRAY_SIZE(data), NULL, 0)) {
+        printk("Failed to start connectable advertising\n");
+        return;
+    }
 }
 
 void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t status)
 {
-    if (!dice->conn || dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
-    k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
+    if (dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
+    k_timer_start(&dice->connected_timeout_timer, dice->connected_timeout_duration, K_NO_WAIT);
 
     dice_number[0] = status;
     dice_number[1] = number != NULL ? *number : 0x00;
@@ -828,7 +754,9 @@ void dice_bt_set_dice_number(bt_dice_dev_t *dice, uint8_t *number, bt_message_t 
 }
 
 void dice_bt_set_cap_state(bt_dice_dev_t *dice, uint8_t *state) {
-    k_timer_start(&dice->bonded_timeout_timer, dice->bonded_timeout_duration, K_NO_WAIT);
+    if (dice->status != bt_status_connected || bt_gatt_is_subscribed(dice->conn, dice->dice_number_att, BT_GATT_CCC_INDICATE)) return;
+
+    k_timer_start(&dice->connected_timeout_timer, dice->connected_timeout_duration, K_NO_WAIT);
 
     bt_bas_set_battery_level(*state);
 }
